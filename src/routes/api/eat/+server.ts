@@ -5,18 +5,55 @@ interface EatLog {
 	type: 'volunteer' | 'orga';
 }
 
-export async function POST(event: { request: Request }) {
+class RequestValidationError extends Error {
+	constructor(
+		public readonly userResponse: Response,
+		error?: any
+	) {
+		super(
+			'Failed to validate request',
+			error
+				? {
+						cause: error
+					}
+				: {}
+		);
+	}
+}
+
+export async function POST(event: { request: Request }): Promise<Response> {
 	const { request } = event;
+
+	let logs: EatLog[];
+	try {
+		logs = await validatePostBody(request);
+
+		console.log(logs);
+
+		return json({ success: true });
+	} catch (e) {
+		if (e instanceof RequestValidationError) {
+			return e.userResponse;
+		} else {
+			throw e;
+		}
+	}
+}
+
+async function validatePostBody(request: Request): Promise<EatLog[]> {
 	let data: { logs: EatLog[] };
 	try {
 		data = await request.json();
 	} catch (e) {
-		return json(
-			{ success: false, error: 'Failed to parse JSON' },
-			{
-				status: 400,
-				statusText: 'Bad Request'
-			}
+		throw new RequestValidationError(
+			json(
+				{ success: false, error: 'Failed to parse JSON' },
+				{
+					status: 400,
+					statusText: 'Bad Request'
+				}
+			),
+			e
 		);
 	}
 
@@ -25,20 +62,19 @@ export async function POST(event: { request: Request }) {
 	}
 
 	if (!('logs' in data) || !Array.isArray(data.logs) || !data.logs.every(isValidLogEntry)) {
-		return json(
-			{
-				success: false,
-				error: `Malformed request, expected: { logs: { timestamp: number, type: 'orga' | 'volunteer' }[] }`
-			},
-			{
-				status: 400,
-				statusText: 'Bad Request'
-			}
+		throw new RequestValidationError(
+			json(
+				{
+					success: false,
+					error: `Malformed request, expected: { logs: { timestamp: number, type: 'orga' | 'volunteer' }[] }`
+				},
+				{
+					status: 400,
+					statusText: 'Bad Request'
+				}
+			)
 		);
 	}
 
-	console.log(data);
-
-	// it's common to return JSON, so SvelteKit has a helper
-	return json({ success: true });
+	return data.logs;
 }
