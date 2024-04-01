@@ -15,11 +15,15 @@
 	$: activeReminder = reminders[showReminder];
 
 	const onClickType = (value: ReminderType) => async () => {
+		if (value === 'none') {
+			return;
+		}
+
 		showReminder = value;
 
-    console.log('about to add', value);
-    await db.addEntry(new Date(), value);
-    console.log('done adding');
+		console.log('about to add', value);
+		await db.addEntry(new Date(), value);
+		console.log('done adding');
 
 		setTimeout(() => {
 			showReminder = 'none';
