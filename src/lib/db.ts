@@ -1,49 +1,70 @@
 import { browser } from '$app/environment';
 
-let resolveSetup: (value: IDBDatabase | PromiseLike<IDBDatabase>) => void;
-let rejectSetup: (err: unknown) => void;
-let setup: Promise<IDBDatabase> = new Promise((res, rej) => {
-	resolveSetup = res;
-	rejectSetup = rej;
-});
+interface Database {
+	addEntry(timestamp: Date, type: 'volunteer' | 'orga'): Promise<void>;
+	getTotals(): Promise<{ currentMeal: number; today: number; allTime: number }>;
+}
 
-export function setupDb(): void {
+export function setupDatabase(): Database {
 	if (!browser) {
-		// Not on client; skip
-		console.log('Cannot load DB');
-		return;
-	}
+		return {
+			async addEntry() {},
+			async getTotals() {
+				return { currentMeal: 0, today: 0, allTime: 0 };
+			}
+		};
+	} else {
+		const db = setupDb();
 
+		return {
+			addEntry: applyDb(db, addEntry),
+			async getTotals() {
+				return { currentMeal: 0, today: 0, allTime: 0 };
+			}
+		};
+	}
+}
+
+function applyDb<Args extends unknown[], ReturnType>(
+	db: Promise<IDBDatabase>,
+	func: (db: IDBDatabase, ...args: Args) => Promise<ReturnType>
+): (...args: Args) => Promise<ReturnType> {
+	return async (...args: Args) => func.apply(null, [await db, ...args]);
+}
+
+function setupDb(): Promise<IDBDatabase> {
 	if (!('indexedDB' in window)) {
 		alert("This browser doesn't support IndexedDB.");
 		throw new Error("This browser doesn't support IndexedDB.");
 	}
 
-	const request = window.indexedDB.open('emfkitchen-eaters', 1);
+	return new Promise((resolve, reject) => {
+		const request = window.indexedDB.open('emfkitchen-eaters', 1);
 
-	request.onerror = (event) => {
-		rejectSetup(event);
-	};
-	request.onsuccess = (event) => {
-		resolveSetup(request.result);
-	};
-	request.onupgradeneeded = (event) => {
-		const db = (event.target as IDBOpenDBRequest).result;
+		request.onerror = (event) => {
+			reject(event);
+		};
+		request.onsuccess = (event) => {
+			console.log('DB Setup successful');
+			resolve(request.result);
+		};
+		request.onupgradeneeded = (event) => {
+			const db = (event.target as IDBOpenDBRequest).result;
 
-		if (!db.objectStoreNames.contains('eaters')) {
-			db.createObjectStore('eaters', {
-				keyPath: 'timestamp'
-			});
-		}
-	};
+			if (!db.objectStoreNames.contains('eaters')) {
+				db.createObjectStore('eaters', {
+					keyPath: 'timestamp'
+				});
+			}
+		};
+	});
 }
 
-export async function addEntry(timestamp: Date, type: 'volunteer' | 'orga'): Promise<void> {
-	if (!browser) {
-		return;
-	}
-	const db = await setup;
-
+export async function addEntry(
+	db: IDBDatabase,
+	timestamp: Date,
+	type: 'volunteer' | 'orga'
+): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
 		const transaction = db.transaction(['eaters'], 'readwrite');
 

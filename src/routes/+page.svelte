@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as db from '$lib/db';
+	import { setupDatabase } from '$lib/db';
 
-	db.setupDb();
+	const db = setupDatabase();
 
 	type ReminderType = 'none' | 'volunteer' | 'orga';
 	let showReminder: ReminderType = 'none';
