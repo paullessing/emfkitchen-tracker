@@ -39,7 +39,7 @@ function setupDb(): Promise<IDBDatabase> {
 	}
 
 	return new Promise((resolve, reject) => {
-		const request = window.indexedDB.open('emfkitchen-eaters', 1);
+		const request = window.indexedDB.open('emfkitchen-eaters', 2);
 
 		request.onerror = (event) => {
 			reject(event);
@@ -56,17 +56,22 @@ function setupDb(): Promise<IDBDatabase> {
 					keyPath: 'timestamp'
 				});
 			}
+			if (!db.objectStoreNames.contains('totals')) {
+				db.createObjectStore('totals', {
+					keyPath: 'type'
+				});
+			}
 		};
 	});
 }
 
-export async function addEntry(
+async function addEntry(
 	db: IDBDatabase,
 	timestamp: Date,
 	type: 'volunteer' | 'orga'
 ): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
-		const transaction = db.transaction(['eaters'], 'readwrite');
+		const transaction = db.transaction(['eaters', 'totals'], 'readwrite');
 
 		transaction.oncomplete = () => resolve();
 		transaction.onerror = reject;
@@ -75,5 +80,22 @@ export async function addEntry(
 			timestamp: timestamp.getTime(),
 			type
 		});
+	});
+}
+
+async function getTotals(
+	db: IDBDatabase
+): Promise<{ currentMeal: number; today: number; allTime: number }> {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction(['eaters'], 'readonly');
+
+		transaction.oncomplete = () => resolve();
+		transaction.onerror = reject;
+
+		transaction.objectStore('eaters').add({
+			timestamp: timestamp.getTime(),
+			type
+		});
+		transaction.objectStore('eaters').count;
 	});
 }
