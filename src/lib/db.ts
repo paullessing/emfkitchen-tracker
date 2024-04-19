@@ -1,16 +1,13 @@
 import { browser } from '$app/environment';
-import type { Database } from './Database.interface';
-import { BrowserDatabase } from './db.browser';
+import type { Database } from '$lib/db.class';
 
-export function setupDatabase(): Database {
-	if (!browser) {
-		return {
-			async addEntry() {},
-			async getTotals() {
-				return { currentMeal: 0, today: 0, allTime: 0 };
-			}
-		};
-	} else {
-		return new BrowserDatabase();
-	}
+export async function setupDatabase(): Promise<Database> {
+  if (browser) {
+    const { createBrowserDatabase } = await import('$lib/db.browser');
+    console.log('browser db');
+    return createBrowserDatabase();
+  } else {
+    const { createServerDatabase } = await import('$lib/db.server');
+    return createServerDatabase();
+  }
 }

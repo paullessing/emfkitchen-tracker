@@ -1,13 +1,14 @@
 <script lang="ts">
-  import {browser} from '$app/environment';
-  import {setupDatabase} from '$lib/db';
+  import { browser } from '$app/environment';
+  import { setupDatabase } from '$lib/db';
+  import type { StoreEaterRequestBody } from '$lib/log.types';
 
   const db = setupDatabase();
 
-  if (browser) {
-    window.addDbEntry = (...args) => db.addEntry(...args);
-    window.getDbTotals = (...args) => db.getTotals(...args);
-  }
+  // if (browser) {
+  //   window.addDbEntry = (...args) => db.addEntry(...args);
+  //   window.getDbTotals = (...args) => db.getTotals(...args);
+  // }
 
   type ReminderType = 'none' | 'volunteer' | 'orga';
   let showReminder: ReminderType = 'none';
@@ -15,7 +16,7 @@
   const reminders: { [key in ReminderType]: string } = {
     volunteer: 'Please put your token into the provided container.',
     orga: 'Enjoy your lunch!',
-    none: ''
+    none: '',
   } as const;
 
   $: activeReminder = reminders[showReminder];
@@ -25,7 +26,7 @@
     now = new Date();
   }, 60 * 1000);
 
-  $: totals = db.getTotals(now);
+  $: totals = db.then((_db) => _db.getTotals(now));
 
   const onClickType = (value: ReminderType) => async () => {
     showReminder = value;
@@ -34,10 +35,27 @@
       return;
     }
 
+    const now = new Date();
+
     // console.log('about to add', value);
-    await db.addEntry(new Date(), value);
+    await (await db).addEntry(now, value);
+
+    const body: StoreEaterRequestBody = {
+      logs: [
+        {
+          type: value,
+          timestamp: now.getTime(),
+        },
+      ],
+    };
+
+    fetch('/api/eat', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
     // console.log('done adding');
-    totals = db.getTotals(new Date());
+    totals = (await db).getTotals(now);
 
     setTimeout(() => {
       showReminder = 'none';
@@ -61,24 +79,23 @@
   </dl>
 {/await}
 
-
 <p class="button-label">Please select your role before taking a plate:</p>
 <div class="eater-selection">
   <button
     class="eater-selection__choice eater-selection__choice--volunteer"
-    on:click={onClickType('volunteer')}>Vo&shy;lun&shy;teer
-  </button
-  >
+    on:click={onClickType('volunteer')}
+    >Vo&shy;lun&shy;teer
+  </button>
   <button
     class="eater-selection__choice eater-selection__choice--orga"
-    on:click={onClickType('orga')}>EMF Orga Member
-  </button
-  >
+    on:click={onClickType('orga')}
+    >EMF Orga Member
+  </button>
 </div>
 
 {#if activeReminder}
   <div class="modal">
-    <p class="reminder">Thank you!<br/>{activeReminder}</p>
+    <p class="reminder">Thank you!<br />{activeReminder}</p>
     <p class="reminder">
       <button on:click={onClickType('none')}>Next Person</button>
     </p>
@@ -98,7 +115,6 @@
       flex: 100% 1 1;
       height: 30vh;
       font-size: 5vh;
-      text-wrap: wrap;
       word-wrap: break-word;
       padding: 2rem;
 
@@ -162,7 +178,6 @@
     box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
     padding: 8rem;
     text-align: center;
-
   }
 
   .reminder {
