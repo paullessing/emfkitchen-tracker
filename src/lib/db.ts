@@ -1,9 +1,6 @@
 import { browser } from '$app/environment';
-
-interface Database {
-	addEntry(timestamp: Date, type: 'volunteer' | 'orga'): Promise<void>;
-	getTotals(): Promise<{ currentMeal: number; today: number; allTime: number }>;
-}
+import type { Database } from './Database.interface';
+import { BrowserDatabase } from './db.browser';
 
 export function setupDatabase(): Database {
 	if (!browser) {
@@ -14,88 +11,6 @@ export function setupDatabase(): Database {
 			}
 		};
 	} else {
-		const db = setupDb();
-
-		return {
-			addEntry: applyDb(db, addEntry),
-			async getTotals() {
-				return { currentMeal: 0, today: 0, allTime: 0 };
-			}
-		};
+		return new BrowserDatabase();
 	}
-}
-
-function applyDb<Args extends unknown[], ReturnType>(
-	db: Promise<IDBDatabase>,
-	func: (db: IDBDatabase, ...args: Args) => Promise<ReturnType>
-): (...args: Args) => Promise<ReturnType> {
-	return async (...args: Args) => func.apply(null, [await db, ...args]);
-}
-
-function setupDb(): Promise<IDBDatabase> {
-	if (!('indexedDB' in window)) {
-		alert("This browser doesn't support IndexedDB.");
-		throw new Error("This browser doesn't support IndexedDB.");
-	}
-
-	return new Promise((resolve, reject) => {
-		const request = window.indexedDB.open('emfkitchen-eaters', 2);
-
-		request.onerror = (event) => {
-			reject(event);
-		};
-		request.onsuccess = (event) => {
-			console.log('DB Setup successful');
-			resolve(request.result);
-		};
-		request.onupgradeneeded = (event) => {
-			const db = (event.target as IDBOpenDBRequest).result;
-
-			if (!db.objectStoreNames.contains('eaters')) {
-				db.createObjectStore('eaters', {
-					keyPath: 'timestamp'
-				});
-			}
-			if (!db.objectStoreNames.contains('totals')) {
-				db.createObjectStore('totals', {
-					keyPath: 'type'
-				});
-			}
-		};
-	});
-}
-
-async function addEntry(
-	db: IDBDatabase,
-	timestamp: Date,
-	type: 'volunteer' | 'orga'
-): Promise<void> {
-	return new Promise<void>((resolve, reject) => {
-		const transaction = db.transaction(['eaters', 'totals'], 'readwrite');
-
-		transaction.oncomplete = () => resolve();
-		transaction.onerror = reject;
-
-		transaction.objectStore('eaters').add({
-			timestamp: timestamp.getTime(),
-			type
-		});
-	});
-}
-
-async function getTotals(
-	db: IDBDatabase
-): Promise<{ currentMeal: number; today: number; allTime: number }> {
-	return new Promise((resolve, reject) => {
-		const transaction = db.transaction(['eaters'], 'readonly');
-
-		transaction.oncomplete = () => resolve();
-		transaction.onerror = reject;
-
-		transaction.objectStore('eaters').add({
-			timestamp: timestamp.getTime(),
-			type
-		});
-		transaction.objectStore('eaters').count;
-	});
 }

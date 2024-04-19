@@ -1,94 +1,113 @@
 <script lang="ts">
-	import { setupDatabase } from '$lib/db';
+  import {browser} from '$app/environment';
+  import {setupDatabase} from '$lib/db';
 
-	const db = setupDatabase();
+  const db = setupDatabase();
 
-	type ReminderType = 'none' | 'volunteer' | 'orga';
-	let showReminder: ReminderType = 'none';
+  if (browser) {
+    window.addDbEntry = (...args) => db.addEntry(...args);
+    window.getDbTotals = (...args) => db.getTotals(...args);
+  }
 
-	const reminders: { [key in ReminderType]: string } = {
-		volunteer: 'Please put your token into the provided container.',
-		orga: 'Enjoy your lunch!',
-		none: ''
-	} as const;
+  type ReminderType = 'none' | 'volunteer' | 'orga';
+  let showReminder: ReminderType = 'none';
 
-	$: activeReminder = reminders[showReminder];
+  const reminders: { [key in ReminderType]: string } = {
+    volunteer: 'Please put your token into the provided container.',
+    orga: 'Enjoy your lunch!',
+    none: ''
+  } as const;
 
-	const onClickType = (value: ReminderType) => async () => {
-		showReminder = value;
+  $: activeReminder = reminders[showReminder];
 
-		if (value === 'none') {
-			return;
-		}
+  let now = new Date();
+  setInterval(() => {
+    now = new Date();
+  }, 60 * 1000);
 
-		// console.log('about to add', value);
-		await db.addEntry(new Date(), value);
-		// console.log('done adding');
+  $: totals = db.getTotals(now);
 
-		setTimeout(() => {
-			showReminder = 'none';
-		}, 5000);
-	};
+  const onClickType = (value: ReminderType) => async () => {
+    showReminder = value;
 
-	let mealsThisSeating = Math.floor(Math.random() * 200);
-	let mealsToday = mealsThisSeating + Math.floor(Math.random() * 400);
-	let mealsTotal = mealsToday + Math.floor(Math.random() * 1000);
+    if (value === 'none') {
+      return;
+    }
+
+    // console.log('about to add', value);
+    await db.addEntry(new Date(), value);
+    // console.log('done adding');
+    totals = db.getTotals(new Date());
+
+    setTimeout(() => {
+      showReminder = 'none';
+    }, 5000);
+  };
 </script>
 
 <p>EMF Volunteer Kitchen</p>
 <h1>Eater Counter</h1>
 <p>Please select your role before taking a plate</p>
 <div class="eater-selection">
-	<button
-		class="eater-selection__choice eater-selection__choice--volunteer"
-		on:click={onClickType('volunteer')}>Vo&shy;lun&shy;teer</button
-	>
-	<button
-		class="eater-selection__choice eater-selection__choice--orga"
-		on:click={onClickType('orga')}>EMF Orga Member</button
-	>
+    <button
+            class="eater-selection__choice eater-selection__choice--volunteer"
+            on:click={onClickType('volunteer')}>Vo&shy;lun&shy;teer
+    </button
+    >
+    <button
+            class="eater-selection__choice eater-selection__choice--orga"
+            on:click={onClickType('orga')}>EMF Orga Member
+    </button
+    >
 </div>
-<p>Meal no. #{mealsThisSeating + 1}</p>
-<p>Total meals served today: {mealsToday}</p>
-<p>Total meals served this EMF: {mealsTotal}</p>
+{#await totals}
+    Loading totals...
+{:then results}
+    <p>Meal no. #{results.currentMeal + 1}</p>
+    <p>Total meals served today: {results.today}</p>
+    <p>Total meals served this EMF: {results.allTime}</p>
+{/await}
 
 {#if activeReminder}
-	<p class="reminder">Thank you!<br />{activeReminder}</p>
-	<p><button on:click={onClickType('none')}>Next Person</button></p>
+    <p class="reminder">Thank you!<br/>{activeReminder}</p>
+    <p>
+        <button on:click={onClickType('none')}>Next Person</button>
+    </p>
 {/if}
 
 <style lang="scss">
-	.eater-selection {
-		display: flex;
+  .eater-selection {
+    display: flex;
 
-		$flex-gutter: 5vw;
-		padding: 0 ($flex-gutter * 0.5);
+    $flex-gutter: 5vw;
+    padding: 0 ($flex-gutter * 0.5);
 
-		&__choice {
-			flex: 100% 1 1;
-			height: 70vh;
-			font-size: 10vh;
-			text-wrap: wrap;
-			word-wrap: break-word;
-			padding: 2rem;
+    &__choice {
+      flex: 100% 1 1;
+      height: 70vh;
+      font-size: 10vh;
+      text-wrap: wrap;
+      word-wrap: break-word;
+      padding: 2rem;
 
-			border: 0;
-			box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+      border: 0;
+      box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
 
-			border-radius: 20px;
+      border-radius: 20px;
 
-			margin: 0 ($flex-gutter * 0.5);
+      margin: 0 ($flex-gutter * 0.5);
 
-			// &:not(:last-child) {
-			// 	margin-right: 10vw;
-			// }
+      // &:not(:last-child) {
+      // 	margin-right: 10vw;
+      // }
 
-			&--volunteer {
-				background: #ffff93;
-			}
-			&--orga {
-				background: #9891ff;
-			}
-		}
-	}
+      &--volunteer {
+        background: #ffff93;
+      }
+
+      &--orga {
+        background: #9891ff;
+      }
+    }
+  }
 </style>
