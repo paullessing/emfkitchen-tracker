@@ -47,32 +47,42 @@
 
 <p>EMF Volunteer Kitchen</p>
 <h1>Eater Counter</h1>
-<p>Please select your role before taking a plate</p>
-<div class="eater-selection">
-    <button
-            class="eater-selection__choice eater-selection__choice--volunteer"
-            on:click={onClickType('volunteer')}>Vo&shy;lun&shy;teer
-    </button
-    >
-    <button
-            class="eater-selection__choice eater-selection__choice--orga"
-            on:click={onClickType('orga')}>EMF Orga Member
-    </button
-    >
-</div>
+
 {#await totals}
-    Loading totals...
+  Loading totals...
 {:then results}
-    <p>Meal no. #{results.currentMeal + 1}</p>
-    <p>Total meals served today: {results.today}</p>
-    <p>Total meals served this EMF: {results.allTime}</p>
+  <dl class="stats">
+    <dt class="stats__title">This Meal</dt>
+    <dd class="stats__number">{results.currentMeal + 1}</dd>
+    <dt class="stats__title">Today</dt>
+    <dd class="stats__number">{results.today + 1}</dd>
+    <dt class="stats__title">All EMF</dt>
+    <dd class="stats__number">{results.allTime + 1}</dd>
+  </dl>
 {/await}
 
+
+<p class="button-label">Please select your role before taking a plate:</p>
+<div class="eater-selection">
+  <button
+    class="eater-selection__choice eater-selection__choice--volunteer"
+    on:click={onClickType('volunteer')}>Vo&shy;lun&shy;teer
+  </button
+  >
+  <button
+    class="eater-selection__choice eater-selection__choice--orga"
+    on:click={onClickType('orga')}>EMF Orga Member
+  </button
+  >
+</div>
+
 {#if activeReminder}
+  <div class="modal">
     <p class="reminder">Thank you!<br/>{activeReminder}</p>
-    <p>
-        <button on:click={onClickType('none')}>Next Person</button>
+    <p class="reminder">
+      <button on:click={onClickType('none')}>Next Person</button>
     </p>
+  </div>
 {/if}
 
 <style lang="scss">
@@ -80,12 +90,14 @@
     display: flex;
 
     $flex-gutter: 5vw;
-    padding: 0 ($flex-gutter * 0.5);
+    padding: 0 (-$flex-gutter * 0.5);
+    margin: 0 auto;
+    max-width: 1000px;
 
     &__choice {
       flex: 100% 1 1;
-      height: 70vh;
-      font-size: 10vh;
+      height: 30vh;
+      font-size: 5vh;
       text-wrap: wrap;
       word-wrap: break-word;
       padding: 2rem;
@@ -108,6 +120,62 @@
       &--orga {
         background: #9891ff;
       }
+    }
+  }
+
+  .button-label {
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 3rem;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-column-gap: 4px;
+    grid-row-gap: 5px;
+    grid-auto-flow: column;
+
+    text-align: center;
+
+    max-width: 1000px;
+    margin: 0 auto;
+
+    &__title {
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    &__number {
+      font-size: 5rem;
+      margin: 0;
+    }
+  }
+
+  .modal {
+    position: fixed;
+    left: 10vh;
+    right: 10vh;
+    top: 10vw;
+    bottom: 10vw;
+    background: white;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+    padding: 8rem;
+    text-align: center;
+
+  }
+
+  .reminder {
+    font-size: 2rem;
+
+    button {
+      border: none;
+      box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+
+      border-radius: 1rem;
+      background-color: aquamarine;
+      padding: 1rem;
+      font-size: 2rem;
     }
   }
 </style>
