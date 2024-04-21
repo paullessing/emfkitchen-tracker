@@ -98,8 +98,25 @@
   };
 </script>
 
-<p>EMF Volunteer Kitchen</p>
-<h1>Eater Counter</h1>
+<img class="logo" src="/logo-outline.svg" alt="EMF Volunteer Kitchen" width="200" />
+
+<h1 class="title">Volunteer Kitchen Signin</h1>
+
+<p class="cta-header">Please choose your role below<br />before taking a plate:</p>
+<div class="eater-selection">
+  <button
+    class="eater-selection__choice eater-selection__choice--volunteer"
+    on:click={onClickType('volunteer')}
+    >Vo&shy;lun&shy;teer
+  </button>
+  <button
+    class="eater-selection__choice eater-selection__choice--orga"
+    on:click={onClickType('orga')}
+    >EMF Orga Member
+  </button>
+</div>
+
+<h2 class="people-served">People Served</h2>
 
 {#await totals}
   Loading totals...
@@ -114,30 +131,36 @@
   </dl>
 {/await}
 
-<p class="cta-header">Please select your role before taking a plate:</p>
-<div class="eater-selection">
-  <button
-    class="eater-selection__choice eater-selection__choice--volunteer"
-    on:click={onClickType('volunteer')}
-    >Vo&shy;lun&shy;teer
-  </button>
-  <button
-    class="eater-selection__choice eater-selection__choice--orga"
-    on:click={onClickType('orga')}
-    >EMF Orga Member
-  </button>
-</div>
-
 {#if activeReminder}
   <div class="modal">
-    <p class="reminder">Thank you!<br />{activeReminder}</p>
-    <p class="reminder">
+    <p class="reminder">Thank you!</p>
+    <p class="reminder reminder--important">{activeReminder}</p>
+    <p class="reminder reminder--end">
       <button on:click={onClickType('none')}>Next Person</button>
     </p>
   </div>
 {/if}
 
 <style lang="scss">
+  @import '../variables';
+
+  .logo {
+    position: absolute;
+    left: -1rem;
+    top: 1rem;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 4rem;
+  }
+
+  .people-served {
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 3rem;
+  }
+
   .eater-selection {
     display: flex;
 
@@ -165,11 +188,11 @@
       // }
 
       &--volunteer {
-        background: #ffff93;
+        background: $pale-green;
       }
 
       &--orga {
-        background: #9891ff;
+        background: $orange;
       }
     }
   }
@@ -178,6 +201,7 @@
     text-align: center;
     font-size: 3rem;
     margin-top: 3rem;
+    margin-bottom: 2rem;
   }
 
   .stats {
@@ -210,23 +234,40 @@
     right: 10vh;
     top: 10vw;
     bottom: 10vw;
-    background: white;
-    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+    background: $dark-green;
+    box-shadow: 0 0 16px 4px rgba(white, 0.3);
     padding: 8rem;
     text-align: center;
+    border-radius: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
   }
 
   .reminder {
     font-size: 2rem;
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--important {
+      font-size: 3rem;
+    }
 
     button {
       border: none;
-      box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 16px 4px rgba(black, 0.3);
 
-      border-radius: 1rem;
-      background-color: aquamarine;
-      padding: 1rem;
+      border-radius: 0.5rem;
+      background-color: $blue;
+      padding: 2rem 4rem;
       font-size: 2rem;
+    }
+
+    &--end {
+      margin-top: auto;
     }
   }
 </style>

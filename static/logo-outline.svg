@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1000"
+   height="1000"
+   viewBox="0 0 264.58334 264.58334"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="C:\Users\paul\Documents\Projects\EMF Kitchen\logo-simple.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="logo-outline.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#676767"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="1"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:snap-object-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:snap-bbox="true"
+     height="280mm"
+     units="mm"
+     inkscape:zoom="1.5554293"
+     inkscape:cx="428.49907"
+     inkscape:cy="724.88027"
+     inkscape:window-width="2256"
+     inkscape:window-height="1425"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs2">
+    <rect
+       x="-986.49402"
+       y="152.74747"
+       width="549.16351"
+       height="454.60553"
+       id="rect2721" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="path1267"
+       inkscape:label="Pan"
+       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:1.5875;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1"
+       transform="translate(-3.21e-4,-3.2e-4)">
+      <path
+         style="color:#000000;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:1.5875;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1"
+         d="M 132.29166,9.7490537 V 72.174799 Z m 1e-5,62.4573933 c -33.184106,1.12e-4 -60.085111,26.901117 -60.085223,60.085223 1.14e-4,33.1841 26.901118,60.08511 60.085223,60.08522 33.1841,-1.1e-4 60.08511,-26.90112 60.08522,-60.08522 -1.1e-4,-33.184105 -26.90112,-60.085109 -60.08522,-60.085223 z m -2e-5,182.627833 v -62.42553 z"
+         id="path1170" />
+      <path
+         style="color:#000000;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:1.5875;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1"
+         d="m 128.5293,9.75 v 58.886719 c -33.461558,1.962932 -60.083873,29.70713 -60.083988,63.654301 1.17e-4,33.94716 26.622431,61.69332 60.083988,63.65625 v 58.88671 h 7.52343 v -58.88476 c 33.46213,-1.96233 60.08583,-29.71063 60.08594,-63.6582 -1.1e-4,-33.947583 -26.62381,-61.693925 -60.08594,-63.656254 V 9.75 Z"
+         id="path1172"
+         sodipodi:nodetypes="ccccccccccc" />
+    </g>
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.1;stroke-dasharray:none"
+       id="path1226"
+       cx="132.29199"
+       cy="132.29167"
+       r="56.313999" />
+    <path
+       style="fill:#972c2c;fill-opacity:1;stroke:none;stroke-width:7.52394;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 154.39329,87.889716 c -4.5204,10.966714 -17.68065,19.625894 -29.57887,14.458324 -11.99349,-5.20897 -24.17003,-2.57654 -33.927803,13.87542 l 4.653376,13.72965 1.048677,-0.49732 c 9.75777,-16.45197 19.31234,-15.25469 31.70452,-11.08208 11.3349,3.8166 29.39102,-5.60086 33.91141,-16.56758 l -6.80609,-14.520993 z"
+       id="path13397"
+       sodipodi:nodetypes="cscccsccc"
+       inkscape:label="Bacon" />
+    <g
+       id="g18060"
+       transform="matrix(0.9478974,0,0,0.9478974,49.867704,-10.567222)"
+       inkscape:label="Egg">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:3.05176;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 75.795041,195.76569 c -12.41822,-8.4077 -9.448832,-31.13147 0.177855,-40.89967 9.626682,-9.76821 28.765994,-13.73875 33.882184,-5.6623 5.1162,8.07651 2.52848,12.15068 3.64887,19.77311 1.1204,7.62243 14.28933,7.72761 4.43606,20.44398 -8.70153,11.22996 -29.726746,14.7526 -42.144969,6.34488 z"
+         id="path17232"
+         sodipodi:nodetypes="ssssss"
+         inkscape:label="Outline" />
+      <circle
+         style="fill:#ffc400;fill-opacity:1;stroke:none;stroke-width:7.9375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path17258"
+         cx="98.738579"
+         cy="-170.47856"
+         r="13.362025"
+         transform="rotate(123.72959)"
+         inkscape:label="Yolk" />
+    </g>
+  </g>
+</svg>

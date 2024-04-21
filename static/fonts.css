@@ -1,0 +1,20 @@
+@font-face {
+  font-family: Raleway;
+  src: url("fonts/Raleway-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: Raleway;
+  font-style: italic;
+  src: url("fonts/Raleway-Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Raleway;
+  font-weight: 600;
+  src: url("fonts/Raleway-SemiBold.woff2") format("woff2");
+}
+@font-face {
+  font-family: Raleway;
+  font-style: italic;
+  src: url("fonts/Raleway-SemiBoldItalic.woff2") format("woff2");
+}
