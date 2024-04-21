@@ -9,6 +9,7 @@ class RequestValidationError extends Error {
   ) {
     super(
       'Failed to validate request',
+      // @ts-expect-error Error constructor in Node has extra parameters; it doesn't in the browser
       error
         ? {
             cause: error,
@@ -23,17 +24,20 @@ const db$ = setupDatabase();
 export async function POST(event: { request: Request }): Promise<Response> {
   const { request } = event;
 
-  let logs: EatLog[];
   try {
-    logs = await validatePostBody(request);
+    const logs = await validatePostBody(request);
+
+    const db = await db$;
 
     for (const { timestamp, type } of logs) {
-      await (await db$).addEntry(new Date(timestamp), type);
+      await db.addEntry(new Date(timestamp), type);
     }
+
+    const totalsByDay = await db.getTotalsByDay();
 
     console.log(logs);
 
-    return json({ success: true });
+    return json({ success: true, totals: totalsByDay });
   } catch (e) {
     if (e instanceof RequestValidationError) {
       return e.userResponse;
@@ -60,6 +64,7 @@ async function validatePostBody(request: Request): Promise<EatLog[]> {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function isValidLogEntry(log: any): log is EatLog {
     return typeof log.timestamp === 'number' && ['orga', 'volunteer'].includes(log.type);
   }

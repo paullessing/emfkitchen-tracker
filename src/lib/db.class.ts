@@ -1,4 +1,4 @@
-import type { EaterTotals } from '$lib/Database.interface';
+import type { EatLog } from '$lib/log.types';
 
 export interface DatabasePersistor {
   getData(): Promise<EaterDay[]>;
@@ -20,6 +20,12 @@ export interface DayMeals {
   night: Timestamp[];
 }
 
+export interface EaterTotals {
+  currentMeal: number;
+  today: number;
+  allTime: number;
+}
+
 function createNewDay(date: string): EaterDay {
   return {
     date,
@@ -36,6 +42,17 @@ function createNewDay(date: string): EaterDay {
       night: [],
     },
   };
+}
+
+function convertDayToList(day: EaterDay): EatLog[] {
+  return (['volunteer', 'orga'] as const).flatMap((type) =>
+    (['breakfast', 'lunch', 'dinner', 'night'] as (keyof DayMeals)[]).flatMap((meal) =>
+      day[EaterTypeMap[type]][meal].map((timestamp: Timestamp) => ({
+        type,
+        timestamp,
+      })),
+    ),
+  );
 }
 
 const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
@@ -55,7 +72,11 @@ export class Database {
       data.sort((a, b) => (a.date < b.date ? -1 : 1));
     }
 
-    day[EaterTypeMap[type]][this.getMealTime(timestamp)].push(timestamp.getTime());
+    const eatersInMeal = day[EaterTypeMap[type]][this.getMealTime(timestamp)];
+    const time = timestamp.getTime();
+    if (!eatersInMeal.includes(time)) {
+      eatersInMeal.push(time);
+    }
 
     console.log(day);
     console.log(data);
@@ -104,6 +125,24 @@ export class Database {
         today: 0,
         allTime: 0,
       },
+    );
+  }
+
+  public async getTotalsByDay(): Promise<Record<string, number>> {
+    const data = await this.persistor.getData();
+
+    return data.reduce<Record<string, number>>((totals, day) => {
+      totals[day.date] = convertDayToList(day).length;
+      return totals;
+    }, {});
+  }
+
+  public async getAllLogsForDays(days: string[]): Promise<EatLog[]> {
+    const data = await this.persistor.getData();
+
+    return data.reduce<EatLog[]>(
+      (logs, day) => (days.includes(day.date) ? logs.concat(convertDayToList(day)) : logs),
+      [],
     );
   }
 
