@@ -14,7 +14,7 @@
 
   const reminders: { [key in ReminderType]: string } = {
     volunteer: 'Please put your token into the provided container.',
-    orga: 'Enjoy your lunch!',
+    orga: 'Enjoy your meal!',
     none: '',
   } as const;
 
@@ -100,19 +100,19 @@
 
 <img class="logo" src="/logo-outline.svg" alt="EMF Volunteer Kitchen" width="200" />
 
-<h1 class="title">Volunteer Kitchen Signin</h1>
+<h1 class="title">Volunteer Kitchen Counter</h1>
 
-<p class="cta-header">Please choose your role below<br />before taking a plate:</p>
+<p class="cta-header">Please count your meal below<br />before taking a plate:</p>
 <div class="eater-selection">
   <button
     class="eater-selection__choice eater-selection__choice--volunteer"
     on:click={onClickType('volunteer')}
-    >Vo&shy;lun&shy;teer
+    ><span style="font-size:2em">+1</span><br />Vo&shy;lun&shy;teer
   </button>
   <button
     class="eater-selection__choice eater-selection__choice--orga"
     on:click={onClickType('orga')}
-    >EMF Orga Member
+    ><span style="font-size:2em">+1</span><br />EMF Orga
   </button>
 </div>
 
@@ -192,7 +192,7 @@
       }
 
       &--orga {
-        background: $orange;
+        background: $blue;
       }
     }
   }
