@@ -6,7 +6,7 @@ export function createServerDatabase(): Database {
   const persistor: DatabasePersistor = {
     async getData(): Promise<EaterDay[]> {
       try {
-        const data = await fs.readFile('db.json', 'utf8');
+        const data = await fs.readFile('/db/db.json', 'utf8');
         console.log('read:', data);
 
         return JSON.parse(data || '[]');
@@ -21,7 +21,7 @@ export function createServerDatabase(): Database {
     },
     async save(data): Promise<void> {
       console.log('write', data);
-      await fs.writeFile('db.json', JSON.stringify(data));
+      await fs.writeFile('/db/db.json', JSON.stringify(data));
     },
   };
 
