@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { setupDatabase } from '$lib/db';
+  import { createBrowserDatabase } from '$lib/db.browser';
   import type { StoreEaterRequestBody } from '$lib/log.types';
 
-  const db$ = setupDatabase();
+  const db = createBrowserDatabase();
 
   // if (browser) {
   //   window.addDbEntry = (...args) => db.addEntry(...args);
@@ -25,7 +25,7 @@
     now = new Date();
   }, 60 * 1000);
 
-  $: totals = db$.then((db) => db.getTotals(now));
+  $: totals = db.getTotals(now);
 
   const onClickType = (value: ReminderType) => async () => {
     showReminder = value;
@@ -37,7 +37,7 @@
     const now = new Date();
 
     // console.log('about to add', value);
-    await (await db$).addEntry(now, value);
+    await db.addEntry(now, value);
 
     const body: StoreEaterRequestBody = {
       logs: [
@@ -53,7 +53,6 @@
       body: JSON.stringify(body),
     }).then(
       async (res) => {
-        const db = await db$;
         const { success, totals: remoteTotals } = (await res.json()) as {
           success: boolean;
           totals: Record<string, number>;
@@ -90,7 +89,7 @@
     );
 
     // console.log('done adding');
-    totals = (await db$).getTotals(now);
+    totals = db.getTotals(now);
 
     setTimeout(() => {
       showReminder = 'none';
@@ -232,8 +231,8 @@
     position: fixed;
     left: 10vh;
     right: 10vh;
-    top: 10vw;
-    bottom: 10vw;
+    top: 50%;
+    transform: translateY(-50%);
     background: $dark-green;
     box-shadow: 0 0 16px 4px rgba(white, 0.3);
     padding: 8rem;
@@ -267,7 +266,7 @@
     }
 
     &--end {
-      margin-top: auto;
+      margin-top: 2rem;
     }
   }
 </style>
