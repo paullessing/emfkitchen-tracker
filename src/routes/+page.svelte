@@ -11,6 +11,11 @@
 
   type ReminderType = 'none' | 'volunteer' | 'orga';
   let showReminder: ReminderType = 'none';
+  let reminder: { time: number; interval: number | null; timeout: number | null } = {
+    time: 0,
+    interval: null,
+    timeout: null,
+  };
 
   const reminders: { [key in ReminderType]: string } = {
     volunteer: 'Please put your token into the provided container.',
@@ -68,7 +73,7 @@
         const localDays = new Set(Object.keys(localTotals));
         console.log(localTotals, remoteTotals);
         for (let [day, remoteCount] of Object.entries(remoteTotals)) {
-          console.log(`Day ${day}, Count: ${remoteCount}, Remote data: ${remoteTotals[day]}`);
+          // console.log(`Day ${day}, Count: ${remoteCount}, Remote data: ${remoteTotals[day]}`);
           if (localDays.has(day) && remoteCount >= localTotals[day]) {
             localDays.delete(day);
           }
@@ -91,9 +96,17 @@
     // console.log('done adding');
     totals = db.getTotals(now);
 
-    setTimeout(() => {
+    clearInterval(reminder.interval);
+    clearTimeout(reminder.timeout);
+    const REMINDER_DURATION_MS = 5000;
+    const reminderHideTime = Date.now() + REMINDER_DURATION_MS;
+    reminder.interval = setInterval(() => {
+      reminder.time = Math.ceil((reminderHideTime - Date.now()) / 1000);
+    }, 100);
+    reminder.timeout = setTimeout(() => {
       showReminder = 'none';
-    }, 5000);
+      clearInterval(reminder.interval);
+    }, REMINDER_DURATION_MS);
   };
 </script>
 
@@ -137,6 +150,7 @@
     <p class="reminder reminder--end">
       <button on:click={onClickType('none')}>Next Person</button>
     </p>
+    <p class="reminder__timer">{reminder.time}s</p>
   </div>
 {/if}
 
@@ -166,7 +180,7 @@
     $flex-gutter: 5vw;
     padding: 0 (-$flex-gutter * 0.5);
     margin: 0 auto;
-    max-width: 1000px;
+    max-width: 800px;
 
     &__choice {
       flex: 100% 1 1;
@@ -244,15 +258,16 @@
   }
 
   .reminder {
-    font-size: 2rem;
+    font-size: 3rem;
     margin-bottom: 1rem;
+    position: relative;
 
     &:last-child {
       margin-bottom: 0;
     }
 
     &--important {
-      font-size: 3rem;
+      font-size: 4rem;
     }
 
     button {
@@ -260,13 +275,19 @@
       box-shadow: 0 0 16px 4px rgba(black, 0.3);
 
       border-radius: 0.5rem;
-      background-color: $blue;
+      background-color: $pale-green;
       padding: 2rem 4rem;
       font-size: 2rem;
     }
 
     &--end {
       margin-top: 2rem;
+    }
+
+    &__timer {
+      position: absolute;
+      bottom: 1rem;
+      left: calc(100% - 2em);
     }
   }
 </style>

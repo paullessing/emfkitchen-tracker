@@ -1,5 +1,9 @@
 @import "reset";
 
+html {
+  font-size: 10px;
+}
+
 body {
   background-color: #213018;
   background-image: url("./background-tiled.png");
@@ -9,7 +13,7 @@ body {
   color: white;
   font-family: Raleway, Arial, Helvetica, sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 12px;
 
   padding: 2rem;
 }
