@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { EatLog, StoreEaterRequestBody } from '$lib/log.types';
-import { setupDatabase } from '$lib/db';
+import { createServerDatabase } from '$lib/server/db.server';
 
 class RequestValidationError extends Error {
   constructor(
@@ -19,15 +19,13 @@ class RequestValidationError extends Error {
   }
 }
 
-const db$ = setupDatabase();
+const db = createServerDatabase();
 
 export async function POST(event: { request: Request }): Promise<Response> {
   const { request } = event;
 
   try {
     const logs = await validatePostBody(request);
-
-    const db = await db$;
 
     for (const { timestamp, type } of logs) {
       await db.addEntry(new Date(timestamp), type);

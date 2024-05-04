@@ -1,6 +1,11 @@
 <script lang="ts">
   import { createBrowserDatabase } from '$lib/db.browser';
   import type { StoreEaterRequestBody } from '$lib/log.types';
+  import type { EaterTotals } from '$lib/db.class';
+
+  export let data: {
+    totals: EaterTotals;
+  };
 
   const db = createBrowserDatabase();
 
@@ -25,12 +30,13 @@
 
   $: activeReminder = reminders[showReminder];
 
-  let now = new Date();
-  setInterval(() => {
-    now = new Date();
-  }, 60 * 1000);
-
-  $: totals = db.getTotals(now);
+  // let now = new Date();
+  // setInterval(() => {
+  //   now = new Date();
+  // }, 60 * 1000);
+  //
+  // $: totals = db.getTotals(now);
+  let totals = data.totals;
 
   const onClickType = (value: ReminderType) => async () => {
     showReminder = value;
