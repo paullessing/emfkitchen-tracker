@@ -110,7 +110,7 @@
   };
 </script>
 
-<img class="logo" src="/logo-outline.svg" alt="EMF Volunteer Kitchen" width="200" />
+<img class="logo" src="/logo-outline.svg" alt="EMF Volunteer Kitchen" width="150" />
 
 <h1 class="title">Volunteer Kitchen Counter</h1>
 
