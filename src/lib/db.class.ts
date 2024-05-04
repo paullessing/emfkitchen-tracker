@@ -78,8 +78,8 @@ export class Database {
       eatersInMeal.push(time);
     }
 
-    console.log(day);
-    console.log(data);
+    // console.log(day);
+    // console.log(data);
 
     await this.persistor.save(data);
   }
