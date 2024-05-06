@@ -3,19 +3,24 @@
   import CounterConfirmationModal from './CounterConfirmationModal.svelte';
   import { EaterType } from '$lib/EaterType.type';
   import EaterSelection from './EaterSelection.svelte';
-  import EaterTotals from './EaterTotals.svelte';
+  import EaterStats from './EaterStats.svelte';
   import db from '$lib/db.browser';
+  import type { EaterTotals } from '$lib/db.class';
+
+  export let data: {
+    totals: EaterTotals;
+  };
 
   let chosenEaterType: EaterType | null = null;
 
-  let totals = db.getTotals();
+  let totals: EaterTotals = data.totals;
 
   const onChooseEaterType = async ({ detail: type }: CustomEvent<EaterType>) => {
     chosenEaterType = type;
 
     await eaterService.logEater(type);
 
-    totals = db.getTotals();
+    totals = await db.getTotals();
   };
 </script>
 
@@ -36,11 +41,7 @@
 
 <h2 class="people-served">People Served</h2>
 
-{#await totals}
-  Loading stats...
-{:then stats}
-  <EaterTotals totals={stats} />
-{/await}
+<EaterStats {totals} />
 
 <CounterConfirmationModal
   type={chosenEaterType}

@@ -1,8 +1,13 @@
 import type { StoreEaterRequestBody } from '$lib/log.types';
 import db from '$lib/db.browser';
 import type { EaterType } from '$lib/EaterType.type';
+import type { EaterTotals } from '$lib/db.class';
 
 export class EaterService {
+  public async getTotals(): Promise<EaterTotals> {
+    return (await fetch('/api/totals')).json();
+  }
+
   public async logEater(type: EaterType): Promise<void> {
     const now = new Date();
 
