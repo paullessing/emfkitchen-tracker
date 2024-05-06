@@ -3,6 +3,8 @@ import { Database } from '$lib/db.class';
 
 const LOCAL_STORAGE_DATA_KEY = 'eaterData';
 
+export default createBrowserDatabase();
+
 export function createBrowserDatabase(): Database {
   const persistor: DatabasePersistor = {
     async getData(): Promise<EaterDay[]> {

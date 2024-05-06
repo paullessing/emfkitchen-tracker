@@ -2,6 +2,7 @@
 /// <reference lib="webworker" />
 
 import { build, files, version } from '$service-worker';
+import { createBrowserDatabase } from '$lib/db.browser';
 
 // Create a unique cache name for this deployment
 const CACHE = `cache-${version}`;
@@ -11,6 +12,8 @@ const ASSETS = [
   ...build, // the app itself
   ...files, // everything in `static`
 ];
+
+const db = createBrowserDatabase();
 
 self.addEventListener('install', ((event: ExtendableEvent) => {
   // Create a new cache and add all files to it
