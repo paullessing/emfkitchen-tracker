@@ -53,11 +53,15 @@
       </p>
     {/if}
     <p class="confirmation__actions">
-      <button class="confirmation__action" on:click={handleDone}>Next Person</button>
+      <button
+        class="confirmation__action"
+        on:click={handleDone}
+      >Next Person
+      </button>
     </p>
   </div>
   {#if timerSeconds >= 0}
-    <p class="confirmation__timer">{timerSeconds}s</p>
+    <p class="confirmation__timer">{timerSeconds}</p>
   {/if}
 </Modal>
 

@@ -11,12 +11,12 @@
   <button
     class="eater-selection__choice eater-selection__choice--volunteer"
     on:click={handleClick(EaterType.VOLUNTEER)}
-    ><span style="font-size:2em">+1</span><br />Vo&shy;lun&shy;teer
+  ><span style="font-size:2em">+1</span><br />Vo&shy;lun&shy;teer
   </button>
   <button
     class="eater-selection__choice eater-selection__choice--orga"
     on:click={handleClick(EaterType.ORGA)}
-    ><span style="font-size:2em">+1</span><br />EMF Orga
+  ><span style="font-size:2em">+1</span><br />EMF Orga
   </button>
 </div>
 
@@ -26,15 +26,15 @@
   .eater-selection {
     display: flex;
 
-    $flex-gutter: 5vw;
-    padding: 0 (-$flex-gutter * 0.5);
+    $flex-gutter: 5rem;
     margin: 0 auto;
     max-width: 800px;
 
     &__choice {
       flex: 100% 1 1;
       height: 30vh;
-      font-size: 5vh;
+      font-size: 4rem;
+      line-height: 1.2;
       word-wrap: break-word;
       padding: 2rem;
 
