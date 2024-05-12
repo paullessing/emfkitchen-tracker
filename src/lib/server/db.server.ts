@@ -4,10 +4,11 @@ import fs from 'fs/promises';
 import { join } from 'path';
 import { env } from '$env/dynamic/private';
 
-export default createServerDatabase();
+export default createDb();
 
-export function createServerDatabase(): Database {
+export function createDb(): Database {
   const dbPath = join(env.DATABASE_DIR, 'db.json');
+
   const persistor: DatabasePersistor = {
     async getData(): Promise<EaterDay[]> {
       try {

@@ -1,24 +1,6 @@
 import type { DayMeals, EaterDay, EaterTotals } from '$lib/db.class';
 import type { EatLog } from '$lib/log.types';
 
-function createNewDay(date: string): EaterDay {
-  return {
-    date,
-    orga: {
-      breakfast: [],
-      lunch: [],
-      dinner: [],
-      night: [],
-    },
-    volunteers: {
-      breakfast: [],
-      lunch: [],
-      dinner: [],
-      night: [],
-    },
-  };
-}
-
 const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
 
 export function computeTotals(now: Date, data: EaterDay[]): EaterTotals {
@@ -34,7 +16,7 @@ export function computeTotals(now: Date, data: EaterDay[]): EaterTotals {
     };
   }
 
-  return data.reduce(
+  return data.reduce<EaterTotals>(
     (acc, day) => {
       const orgaMeals = reduceMeals(day.orga);
       const volunteerMeals = reduceMeals(day.volunteers);
@@ -51,6 +33,7 @@ export function computeTotals(now: Date, data: EaterDay[]): EaterTotals {
       const allTime = acc.allTime + today;
 
       return {
+        ...acc,
         currentMeal: date === day.date ? totals[nowMealName] : acc.currentMeal,
         today: date === day.date ? today : acc.today,
         allTime,
@@ -60,6 +43,7 @@ export function computeTotals(now: Date, data: EaterDay[]): EaterTotals {
       currentMeal: 0,
       today: 0,
       allTime: 0,
+      timestamp: now.getTime()
     },
   );
 }
@@ -94,6 +78,11 @@ export function convertDaysToLogs(data: EaterDay[]): EatLog[] {
     .sort((a, b) => a.timestamp - b.timestamp);
 }
 
+/**
+ * Adds the given logs to the EaterDay array, returning the same array.
+ * @param logs
+ * @param days
+ */
 export function addLogsToDays(logs: EatLog[], days: EaterDay[] = []): EaterDay[] {
   for (const log of logs) {
     addLogToDays(log, days);
@@ -137,4 +126,22 @@ export function getMealTime(timestamp: Date): keyof DayMeals {
 
 export function getDateString(timestamp: Date): string {
   return timestamp.toISOString().replace(/T.*$/, '');
+}
+
+function createNewDay(date: string): EaterDay {
+  return {
+    date,
+    orga: {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      night: [],
+    },
+    volunteers: {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      night: [],
+    },
+  };
 }

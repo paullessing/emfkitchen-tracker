@@ -29,11 +29,17 @@ export async function POST(event: { request: Request }): Promise<Response> {
       await db.addEntry(new Date(timestamp), type);
     }
 
-    const totalsByDay = await db.getTotalsByDay();
+    // const totalsByDay = await db.getTotalsByDay();
 
-    console.log(logs);
+    // console.log(logs);
 
-    return json({ success: true, totals: totalsByDay });
+    // return json({ success: true, totals: totalsByDay });
+
+    return json({
+      success: true,
+      totals: await db.getTotals(new Date()),
+    })
+
   } catch (e) {
     if (e instanceof RequestValidationError) {
       return e.userResponse;

@@ -2,6 +2,8 @@ import { json } from '@sveltejs/kit';
 import db from '$lib/server/db.server';
 
 export async function GET(event: { request: Request }): Promise<Response> {
-  const totals = db.getTotals(new Date());
+  // console.log(event);
+  const totals = await db.getTotals(new Date());
+  console.log('Totals', totals);
   return json(totals);
 }

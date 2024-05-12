@@ -4,23 +4,21 @@
   import { EaterType } from '$lib/EaterType.type';
   import EaterSelection from './EaterSelection.svelte';
   import EaterStats from './EaterStats.svelte';
-  import db from '$lib/db.browser';
   import type { EaterTotals } from '$lib/db.class';
-
-  export let data: {
-    totals: EaterTotals;
-  };
+  import { browser } from '$app/environment';
+  import type { Readable } from 'svelte/store';
 
   let chosenEaterType: EaterType | null = null;
 
-  let totals: EaterTotals = data.totals;
+  let totals: Readable<EaterTotals> = eaterService.eaterTotals;
+  if (browser) {
+    eaterService.getTotals();
+  }
 
   const onChooseEaterType = async ({ detail: type }: CustomEvent<EaterType>) => {
     chosenEaterType = type;
 
     await eaterService.logEater(type);
-
-    totals = await db.getTotals();
   };
 </script>
 
@@ -41,7 +39,7 @@
 
 <h2 class="people-served">People Served</h2>
 
-<EaterStats {totals} />
+<EaterStats totals="{$totals}" />
 
 <CounterConfirmationModal
   type={chosenEaterType}

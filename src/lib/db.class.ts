@@ -25,6 +25,7 @@ export interface EaterTotals {
   currentMeal: number;
   today: number;
   allTime: number;
+  timestamp: number;
 }
 
 function createNewDay(date: string): EaterDay {
