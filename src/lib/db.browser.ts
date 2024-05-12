@@ -3,7 +3,6 @@ import * as EaterUtils from '$lib/dataStorage.util';
 import { addLogsToDays } from '$lib/dataStorage.util';
 import type { EatLog } from '$lib/log.types';
 import type { EaterTotals } from '$lib/EaterTotals.type';
-import { browser } from '$app/environment';
 
 const LOCAL_STORAGE_DATA_KEY = 'eaterData';
 const LOCAL_STORAGE_TOTALS_KEY = 'lastServerTotals';
@@ -92,32 +91,6 @@ export class BrowserStorage {
   }
 }
 
-class FakeBrowserStorage extends BrowserStorage {
-  public getTotals() {
-    return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
-  }
-
-  public getUnsyncedLogs() {
-    return [];
-  }
-
-  public hasUnsyncedLogs() {
-    return false;
-  }
-
-  public getLogsSince() {
-    return [];
-  }
-
-  public getServerTotals() {
-    return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
-  }
-
-  public setServerTotals() {}
-
-  public addLog() {}
-}
-
-const browserStorage: BrowserStorage = browser ? new BrowserStorage() : new FakeBrowserStorage();
+const browserStorage: BrowserStorage = new BrowserStorage();
 
 export default browserStorage;

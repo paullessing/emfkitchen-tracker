@@ -2,7 +2,7 @@ import type { EatLog, StoreEaterRequestBody } from '$lib/log.types';
 import type { EaterType } from '$lib/EaterType.type';
 import { type Writable, writable } from 'svelte/store';
 import type { EaterTotals } from '$lib/EaterTotals.type';
-import db from '$lib/db.browser';
+import db, { BrowserStorage } from '$lib/db.browser';
 import { browser } from '$app/environment';
 
 const RETRY_SYNC_INTERVAL_SECONDS = 10;
@@ -15,9 +15,12 @@ export class EaterService {
 
   private syncInterval: number | null = null;
 
+  private readonly db: BrowserStorage;
+
   constructor() {
     if (browser) {
-      this._eaterTotals = writable<EaterTotals>(db.getTotals());
+      this.db = db;
+      this._eaterTotals = writable<EaterTotals>(this.db.getTotals());
     } else {
       this._eaterTotals = writable<EaterTotals>({
         currentMeal: 0,
@@ -25,6 +28,7 @@ export class EaterService {
         allTime: 0,
         timestamp: 0,
       });
+      this.db = new FakeBrowserStorage();
     }
 
     this.attemptSync().catch(() => this.startSyncAttempts());
@@ -49,8 +53,8 @@ export class EaterService {
       type,
       timestamp: now.getTime(),
     };
-    db.addLog(eatLog);
-    this._eaterTotals.set(db.getTotals());
+    this.db.addLog(eatLog);
+    this._eaterTotals.set(this.db.getTotals());
 
     try {
       await this.attemptSync();
@@ -61,14 +65,14 @@ export class EaterService {
 
   private startSyncAttempts(): void {
     this.clearInterval();
-    if (browser && db.hasUnsyncedLogs()) {
-      console.log('Starting sync attempts', db.getUnsyncedLogs());
+    if (browser && this.db.hasUnsyncedLogs()) {
+      console.log('Starting sync attempts', this.db.getUnsyncedLogs());
       setInterval(() => this.attemptSync(), RETRY_SYNC_INTERVAL_SECONDS * 1000);
     }
   }
 
   private async attemptSync(): Promise<void> {
-    const logs = db.getUnsyncedLogs();
+    const logs = this.db.getUnsyncedLogs();
     console.debug(`Attempting to sync with ${logs.length} unsynced logs`);
     if (!logs.length) {
       this.clearInterval();
@@ -89,7 +93,7 @@ export class EaterService {
     };
 
     if (data.success) {
-      db.setServerTotals(data.totals);
+      this.db.setServerTotals(data.totals);
       this._eaterTotals.set(data.totals);
       this.clearInterval();
 
@@ -108,9 +112,35 @@ export class EaterService {
 }
 
 class FailedSyncError extends Error {
-  constructor(public readonly data?: any) {
+  constructor(public readonly data?: unknown) {
     super('Failed to sync');
   }
 }
 
 export default new EaterService();
+
+class FakeBrowserStorage extends BrowserStorage {
+  public getTotals() {
+    return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
+  }
+
+  public getUnsyncedLogs() {
+    return [];
+  }
+
+  public hasUnsyncedLogs() {
+    return false;
+  }
+
+  public getLogsSince() {
+    return [];
+  }
+
+  public getServerTotals() {
+    return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
+  }
+
+  public setServerTotals() {}
+
+  public addLog() {}
+}
