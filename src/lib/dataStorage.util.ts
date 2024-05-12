@@ -12,12 +12,22 @@ export function computeTotals(
   const date = getDateString(now);
   const nowMealName = getMealTime(now);
 
-  function reduceMeals(dayMeals: DayMeals): { [key in keyof DayMeals]: number } {
+  function reduceMeals(
+    dayMeals: DayMeals,
+  ): { [key in keyof DayMeals]: number } & { latestDate: number } {
+    const latestDate = Math.max(
+      0,
+      ...dayMeals.breakfast,
+      ...dayMeals.lunch,
+      ...dayMeals.dinner,
+      ...dayMeals.night,
+    );
     return {
       breakfast: dayMeals.breakfast.length,
       lunch: dayMeals.lunch.length,
       dinner: dayMeals.dinner.length,
       night: dayMeals.night.length,
+      latestDate,
     };
   }
 
@@ -33,6 +43,8 @@ export function computeTotals(
         night: orgaMeals.night + volunteerMeals.night,
       };
 
+      const latestDate = Math.max(orgaMeals.latestDate, volunteerMeals.latestDate);
+
       const today = totals.breakfast + totals.lunch + totals.dinner + totals.night;
 
       const allTime = acc.allTime + today;
@@ -42,13 +54,14 @@ export function computeTotals(
         currentMeal: date === day.date ? totals[nowMealName] : acc.currentMeal,
         today: date === day.date ? today : acc.today,
         allTime,
+        timestamp: Math.max(acc.timestamp, latestDate),
       };
     },
     {
       currentMeal: 0,
       today: 0,
       allTime: 0,
-      timestamp: now.getTime(),
+      timestamp: 0,
     },
   );
 
