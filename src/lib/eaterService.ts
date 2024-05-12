@@ -4,6 +4,7 @@ import { type Writable, writable } from 'svelte/store';
 import type { EaterTotals } from '$lib/EaterTotals.type';
 import db, { BrowserStorage } from '$lib/db.browser';
 import { browser } from '$app/environment';
+import { FakeBrowserStorage } from '$lib/FakeBrowserStorage';
 
 const RETRY_SYNC_INTERVAL_SECONDS = 10;
 
@@ -118,29 +119,3 @@ class FailedSyncError extends Error {
 }
 
 export default new EaterService();
-
-class FakeBrowserStorage extends BrowserStorage {
-  public getTotals() {
-    return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
-  }
-
-  public getUnsyncedLogs() {
-    return [];
-  }
-
-  public hasUnsyncedLogs() {
-    return false;
-  }
-
-  public getLogsSince() {
-    return [];
-  }
-
-  public getServerTotals() {
-    return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
-  }
-
-  public setServerTotals() {}
-
-  public addLog() {}
-}
