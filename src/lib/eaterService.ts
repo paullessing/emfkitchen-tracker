@@ -1,24 +1,33 @@
-import type { StoreEaterRequestBody } from '$lib/log.types';
-import db from '$lib/db.browser';
+import type { EatLog, StoreEaterRequestBody } from '$lib/log.types';
 import type { EaterType } from '$lib/EaterType.type';
-import type { EaterTotals } from '$lib/db.class';
 import { type Writable, writable } from 'svelte/store';
+import type { EaterTotals } from '$lib/EaterTotals.type';
+import db from '$lib/db.browser';
+import { browser } from '$app/environment';
+
+const RETRY_SYNC_INTERVAL_SECONDS = 10;
 
 export class EaterService {
-
   private readonly _eaterTotals: Writable<EaterTotals>;
-
   public get eaterTotals() {
     return this._eaterTotals;
   }
 
+  private syncInterval: number | null = null;
+
   constructor() {
-    this._eaterTotals = writable<EaterTotals>({
-      currentMeal: 0,
-      today: 0,
-      allTime: 0,
-      timestamp: 0,
-    })
+    if (browser) {
+      this._eaterTotals = writable<EaterTotals>(db.getTotals());
+    } else {
+      this._eaterTotals = writable<EaterTotals>({
+        currentMeal: 0,
+        today: 0,
+        allTime: 0,
+        timestamp: 0,
+      });
+    }
+
+    this.attemptSync().catch(() => this.startSyncAttempts());
   }
 
   public async getTotals(): Promise<EaterTotals> {
@@ -36,61 +45,71 @@ export class EaterService {
 
   public async logEater(type: EaterType): Promise<void> {
     const now = new Date();
-
-    // console.log('about to add', value);
-    await db.addEntry(now, type);
-
-    const body: StoreEaterRequestBody = {
-      logs: [
-        {
-          type,
-          timestamp: now.getTime(),
-        },
-      ],
+    const eatLog: EatLog = {
+      type,
+      timestamp: now.getTime(),
     };
+    db.addLog(eatLog);
+    this._eaterTotals.set(db.getTotals());
 
     try {
-      const res = await fetch('/api/eat', {
-        method: 'POST',
-        body: JSON.stringify(body),
-      });
-
-      const { success, totals } = (await res.json()) as {
-        success: boolean;
-        totals: EaterTotals;
-      };
-
-      if (!success) {
-        console.error('No success');
-        return;
-      }
-
-      this._eaterTotals.set(totals);
-
-      // const localTotals = await db.getTotalsByDay();
-      //
-      // const localDays = new Set(Object.keys(localTotals));
-      // console.log(localTotals, remoteTotals);
-      // for (const [day, remoteCount] of Object.entries(remoteTotals)) {
-      //   // console.log(`Day ${day}, Count: ${remoteCount}, Remote data: ${remoteTotals[day]}`);
-      //   if (localDays.has(day) && remoteCount >= localTotals[day]) {
-      //     localDays.delete(day);
-      //   }
-      // }
-      // // localDays contains list of days we need to synchronise
-      // if (localDays.size > 0) {
-      //   const dataToSync = await db.getAllLogsForDays(Array.from(localDays.values()));
-      //   console.log('days', [...localDays.values()], dataToSync);
-      //   await fetch('/api/eat', {
-      //     method: 'POST',
-      //     body: JSON.stringify({ logs: dataToSync } as StoreEaterRequestBody),
-      //   });
-      // }
-    } catch (error) {
-      console.warn('Failed to submit data to backend:', error);
-
-      // TODO store unsubmitted value and retry later
+      await this.attemptSync();
+    } catch (e) {
+      this.startSyncAttempts();
     }
+  }
+
+  private startSyncAttempts(): void {
+    this.clearInterval();
+    if (browser && db.hasUnsyncedLogs()) {
+      console.log('Starting sync attempts', db.getUnsyncedLogs());
+      setInterval(() => this.attemptSync(), RETRY_SYNC_INTERVAL_SECONDS * 1000);
+    }
+  }
+
+  private async attemptSync(): Promise<void> {
+    const logs = db.getUnsyncedLogs();
+    console.debug(`Attempting to sync with ${logs.length} unsynced logs`);
+    if (!logs.length) {
+      this.clearInterval();
+      return;
+    }
+
+    const body: StoreEaterRequestBody = {
+      logs,
+    };
+    const res = await fetch('/api/eat', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    const data = (await res.json()) as {
+      success: boolean;
+      totals: EaterTotals;
+    };
+
+    if (data.success) {
+      db.setServerTotals(data.totals);
+      this._eaterTotals.set(data.totals);
+      this.clearInterval();
+
+      console.log('Successfully synced');
+    } else {
+      throw new FailedSyncError(data);
+    }
+  }
+
+  private clearInterval() {
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+      this.syncInterval = null;
+    }
+  }
+}
+
+class FailedSyncError extends Error {
+  constructor(public readonly data?: any) {
+    super('Failed to sync');
   }
 }
 

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { EaterTotals } from '$lib/db.class';
+
+  import type { EaterTotals } from '$lib/EaterTotals.type';
 
   export let totals: EaterTotals;
 </script>

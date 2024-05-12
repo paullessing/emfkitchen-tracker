@@ -1,9 +1,14 @@
-import type { DayMeals, EaterDay, EaterTotals } from '$lib/db.class';
+import type { DayMeals, EaterDay } from '$lib/db.class';
 import type { EatLog } from '$lib/log.types';
+import type { EaterTotals } from '$lib/EaterTotals.type';
 
 const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
 
-export function computeTotals(now: Date, data: EaterDay[]): EaterTotals {
+export function computeTotals(
+  now: Date,
+  data: EaterDay[],
+  startingTotals?: EaterTotals,
+): EaterTotals {
   const date = getDateString(now);
   const nowMealName = getMealTime(now);
 
@@ -16,7 +21,7 @@ export function computeTotals(now: Date, data: EaterDay[]): EaterTotals {
     };
   }
 
-  return data.reduce<EaterTotals>(
+  const totals = data.reduce<EaterTotals>(
     (acc, day) => {
       const orgaMeals = reduceMeals(day.orga);
       const volunteerMeals = reduceMeals(day.volunteers);
@@ -43,9 +48,34 @@ export function computeTotals(now: Date, data: EaterDay[]): EaterTotals {
       currentMeal: 0,
       today: 0,
       allTime: 0,
-      timestamp: now.getTime()
+      timestamp: now.getTime(),
     },
   );
+
+  if (startingTotals) {
+    return addTotals(startingTotals, totals);
+  } else {
+    return totals;
+  }
+}
+
+/**
+ * Data from baseTotals will be added if it matches the date/meal of latestTotals
+ * @param baseTotals
+ * @param latestTotals
+ */
+export function addTotals(baseTotals: EaterTotals, latestTotals: EaterTotals): EaterTotals {
+  const baseDate = new Date(baseTotals.timestamp);
+  const latestDate = new Date(latestTotals.timestamp);
+  const matchesDay = getDateString(baseDate) === getDateString(latestDate);
+  const matchesMeal = matchesDay && getMealTime(baseDate) === getMealTime(latestDate);
+
+  return {
+    timestamp: Math.max(baseTotals.timestamp, latestTotals.timestamp),
+    allTime: baseTotals.allTime + latestTotals.allTime,
+    today: (matchesDay ? baseTotals.today : 0) + latestTotals.today,
+    currentMeal: (matchesMeal ? baseTotals.currentMeal : 0) + latestTotals.currentMeal,
+  };
 }
 
 export function getAllTimestamps(meals: DayMeals): number[] {

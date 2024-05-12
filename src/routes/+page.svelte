@@ -4,9 +4,9 @@
   import { EaterType } from '$lib/EaterType.type';
   import EaterSelection from './EaterSelection.svelte';
   import EaterStats from './EaterStats.svelte';
-  import type { EaterTotals } from '$lib/db.class';
   import { browser } from '$app/environment';
   import type { Readable } from 'svelte/store';
+  import type { EaterTotals } from '$lib/EaterTotals.type';
 
   let chosenEaterType: EaterType | null = null;
 

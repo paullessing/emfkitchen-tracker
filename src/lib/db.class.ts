@@ -1,5 +1,6 @@
 import type { EatLog } from '$lib/log.types';
 import { computeTotals, getDateString, getMealTime } from '$lib/dataStorage.util';
+import type { EaterTotals } from '$lib/EaterTotals.type';
 
 export interface DatabasePersistor {
   getData(): Promise<EaterDay[]>;
@@ -19,13 +20,6 @@ export interface DayMeals {
   lunch: Timestamp[];
   dinner: Timestamp[];
   night: Timestamp[];
-}
-
-export interface EaterTotals {
-  currentMeal: number;
-  today: number;
-  allTime: number;
-  timestamp: number;
 }
 
 function createNewDay(date: string): EaterDay {
