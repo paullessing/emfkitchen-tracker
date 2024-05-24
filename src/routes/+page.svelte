@@ -29,17 +29,17 @@
   width="150"
 />
 
-<h1 class="title">Volunteer Kitchen Counter</h1>
+<h1 class="title">Volunteer Kitchen Log</h1>
 
 <p class="cta-header">
-  Please click the counter matching your wristband<br />before taking a plate:
+  Please log your token type<br />before taking a plate:
 </p>
 
 <EaterSelection on:chooseType={onChooseEaterType} />
 
 <h2 class="people-served">People Served</h2>
 
-<EaterStats totals="{$totals}" />
+<EaterStats totals={$totals} />
 
 <CounterConfirmationModal
   type={chosenEaterType}

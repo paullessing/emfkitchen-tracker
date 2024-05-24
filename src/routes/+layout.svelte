@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-  <title>Meal Tracker | EMF Volunteer Kitchen</title>
+  <title>Meal Log | EMF Volunteer Kitchen</title>
 </svelte:head>
 
 <slot />

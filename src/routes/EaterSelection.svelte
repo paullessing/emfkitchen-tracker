@@ -11,12 +11,12 @@
   <button
     class="eater-selection__choice eater-selection__choice--volunteer"
     on:click={handleClick(EaterType.VOLUNTEER)}
-  ><span style="font-size:2em">+1</span><br />Vo&shy;lun&shy;teer
+    >Physical Token
   </button>
   <button
     class="eater-selection__choice eater-selection__choice--orga"
     on:click={handleClick(EaterType.ORGA)}
-  ><span style="font-size:2em">+1</span><br />EMF Orga
+    >Wristband
   </button>
 </div>
 
