@@ -29,7 +29,7 @@
   width="150"
 />
 
-<h1 class="title">Volunteer Kitchen Log</h1>
+<h1 class="title">Volunteer Kitchen Meal Log</h1>
 
 <p class="cta-header">
   Please log your token type<br />before taking a plate:

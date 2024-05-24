@@ -39,7 +39,15 @@
       padding: 2rem;
 
       border: 0;
-      box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+      box-shadow:
+        0 6px 0 0 rgba(180, 180, 180, 0.5),
+        0 8px 6px 4px rgba(0, 0, 0, 0.3);
+
+      &:active {
+        position: relative;
+        top: 6px;
+        box-shadow: none;
+      }
 
       border-radius: 0.5rem;
 
