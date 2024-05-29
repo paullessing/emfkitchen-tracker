@@ -12,11 +12,13 @@
     class="eater-selection__choice eater-selection__choice--volunteer"
     on:click={handleClick(EaterType.VOLUNTEER)}
     >Physical Token
+    <span class="eater-selection__subtitle">One-off Volunteers</span>
   </button>
   <button
     class="eater-selection__choice eater-selection__choice--orga"
     on:click={handleClick(EaterType.ORGA)}
-    >Wristband
+    >Wristband<br />
+    <span class="eater-selection__subtitle">Permanent Volunteers</span>
   </button>
 </div>
 
@@ -58,12 +60,18 @@
       // }
 
       &--volunteer {
-        background: $colour-volunteer;
+        //background: $colour-volunteer;
+        background: linear-gradient(135deg, #afc944 0%, #528329 100%);
       }
 
       &--orga {
-        background: $colour-orga;
+        //background: $colour-orga;
+        background: linear-gradient(135deg, $orange 0%, $pink 100%);
       }
+    }
+
+    &__subtitle {
+      font-size: 0.6em;
     }
   }
 </style>
