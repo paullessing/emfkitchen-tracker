@@ -11,7 +11,7 @@
   <button
     class="eater-selection__choice eater-selection__choice--volunteer"
     on:click={handleClick(EaterType.VOLUNTEER)}
-    >Physical Token
+    >Meal Token<br />
     <span class="eater-selection__subtitle">One-off Volunteers</span>
   </button>
   <button
