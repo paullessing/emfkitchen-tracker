@@ -49,14 +49,14 @@
       <p class="confirmation__text confirmation__text--important">Enjoy your meal!</p>
     {:else}
       <p class="confirmation__text confirmation__text--important">
-        Please put your token into the provided container.
+        Please put your <b>TOKEN</b><br /> into the <b>BOX BELOW</b>.
       </p>
     {/if}
     <p class="confirmation__actions">
       <button
         class="confirmation__action"
         on:click={handleDone}
-      >Next Person
+        >OK
       </button>
     </p>
   </div>
