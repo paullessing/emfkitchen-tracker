@@ -10,6 +10,6 @@ vite.config.ts.timestamp-*
 .idea/
 
 db.json
-/db
+./db/
 
 *:Zone.Identifier

@@ -52,14 +52,7 @@ export function createDb(): Database {
     },
   };
 
-  let fileExists;
-  try {
-    fileExists = fsCb.existsSync(join(env.DATABASE_DIR, 'nedb.db'));
-  } catch (e) {
-    fileExists = false;
-  }
-
-  if (fileExists) {
+  if (!fsCb.existsSync(join(env.DATABASE_DIR, 'nedb.db'))) {
     console.log('File not found, translating');
     const existingData = (() => {
       try {
