@@ -158,9 +158,9 @@ export function getMealTime(timestamp: Date): keyof DayMeals {
 
   if (hour >= 6 && hour < 12) {
     return 'breakfast';
-  } else if (hour >= 12 && hour < 18) {
+  } else if (hour >= 11 && hour < 17) {
     return 'lunch';
-  } else if (hour >= 18) {
+  } else if (hour >= 17) {
     return 'dinner';
   } else {
     return 'night';
