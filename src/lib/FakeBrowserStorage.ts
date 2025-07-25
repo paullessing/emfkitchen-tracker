@@ -1,6 +1,7 @@
 import { BrowserStorage } from '$lib/db.browser';
 
 export class FakeBrowserStorage extends BrowserStorage {
+  /* eslint-disable @typescript-eslint/explicit-function-return-type */
   public getTotals() {
     return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
   }
@@ -21,7 +22,11 @@ export class FakeBrowserStorage extends BrowserStorage {
     return { timestamp: 0, today: 0, allTime: 0, currentMeal: 0 };
   }
 
-  public setServerTotals() {}
+  public setServerTotals() {
+    /* */
+  }
 
-  public addLog() {}
+  public addLog() {
+    /* */
+  }
 }

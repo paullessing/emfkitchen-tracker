@@ -1,6 +1,6 @@
 import db from '$lib/server/db.server';
 
-export async function GET(event: { request: Request }): Promise<Response> {
+export async function GET(/* event: { request: Request } */): Promise<Response> {
   // console.log(event);
   const totals = await db.getTotals(new Date());
 

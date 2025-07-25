@@ -1,11 +1,16 @@
 <script lang="ts">
-  export let isOpen = false;
+  interface Props {
+    isOpen?: boolean;
+    children?: import('svelte').Snippet;
+  }
+
+  let { isOpen = false, children }: Props = $props();
 </script>
 
 {#if isOpen}
   <div class="modal">
     <div class="modal__container">
-      <slot />
+      {@render children?.()}
     </div>
   </div>
 {/if}

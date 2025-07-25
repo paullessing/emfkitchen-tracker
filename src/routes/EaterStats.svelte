@@ -1,8 +1,11 @@
 <script lang="ts">
-
   import type { EaterTotals } from '$lib/EaterTotals.type';
 
-  export let totals: EaterTotals;
+  interface Props {
+    totals: EaterTotals;
+  }
+
+  let { totals }: Props = $props();
 </script>
 
 <dl class="stats">

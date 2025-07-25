@@ -1,6 +1,6 @@
 import type { EaterTotals } from '$lib/EaterTotals.type';
 
-export async function load({ params }): Promise<{ totals: EaterTotals }> {
+export async function load(/* { params } */): Promise<{ totals: EaterTotals }> {
   return {
     totals: {
       allTime: 0,

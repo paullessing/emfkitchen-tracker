@@ -1,6 +1,6 @@
 import type { DayMeals, EaterDay } from '$lib/db.class';
-import type { EatLog } from '$lib/log.types';
 import type { EaterTotals } from '$lib/EaterTotals.type';
+import type { EatLog } from '$lib/log.types';
 
 const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
 

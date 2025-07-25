@@ -8,7 +8,7 @@
   import type { Readable } from 'svelte/store';
   import type { EaterTotals } from '$lib/EaterTotals.type';
 
-  let chosenEaterType: EaterType | null = null;
+  let chosenEaterType: EaterType | null = $state(null);
 
   let totals: Readable<EaterTotals> = eaterService.eaterTotals;
   if (browser) {

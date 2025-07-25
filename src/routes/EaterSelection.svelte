@@ -10,13 +10,13 @@
 <div class="eater-selection">
   <button
     class="eater-selection__choice eater-selection__choice--volunteer"
-    on:click={handleClick(EaterType.VOLUNTEER)}
+    onclick={handleClick(EaterType.VOLUNTEER)}
     >Meal Token<br />
     <span class="eater-selection__subtitle">One-off Volunteers</span>
   </button>
   <button
     class="eater-selection__choice eater-selection__choice--orga"
-    on:click={handleClick(EaterType.ORGA)}
+    onclick={handleClick(EaterType.ORGA)}
     >Wristband<br />
     <span class="eater-selection__subtitle">Permanent Volunteers</span>
   </button>

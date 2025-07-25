@@ -1,9 +1,9 @@
-import type { DatabasePersistor, EaterDay } from '$lib/db.class';
-import { Database } from '$lib/db.class';
 import fs from 'fs/promises';
 import { join } from 'path';
 import { env } from '$env/dynamic/private';
 import { addLogsToDays, convertDaysToLogs } from '$lib/dataStorage.util';
+import { Database } from '$lib/db.class';
+import type { DatabasePersistor, EaterDay } from '$lib/db.class';
 
 export default createDb();
 

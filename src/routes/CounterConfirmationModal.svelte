@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import Modal from '$lib/components/Modal.svelte';
   import type { EaterType } from '$lib/EaterType.type';
   import { createEventDispatcher } from 'svelte';
@@ -7,23 +9,21 @@
     done: undefined;
   }>();
 
-  export let type: EaterType | null;
-  $: if (type) {
-    openModal();
-  } else {
-    isModalOpen = false;
-    intervalRef && clearInterval(intervalRef);
+  interface Props {
+    type: EaterType | null;
   }
+
+  let { type }: Props = $props();
 
   const MODAL_TIMEOUT_MS = 5000;
 
-  let isModalOpen = false;
-  let intervalRef: number | null = null;
-  let timerSeconds = 0;
+  let isModalOpen = $state(false);
+  let intervalRef: number | null = $state(null);
+  let timerSeconds = $state(0);
 
   function openModal() {
     isModalOpen = true;
-    intervalRef && clearInterval(intervalRef);
+    if (intervalRef) clearInterval(intervalRef);
     const reminderHideTime = Date.now() + MODAL_TIMEOUT_MS;
 
     intervalRef = setInterval(() => {
@@ -31,7 +31,7 @@
 
       if (timerSeconds <= 0) {
         isModalOpen = false;
-        intervalRef && clearInterval(intervalRef);
+        if (intervalRef) clearInterval(intervalRef);
         dispatch('done');
       }
     }, 100) as unknown as number;
@@ -40,6 +40,15 @@
   function handleDone() {
     dispatch('done');
   }
+
+  run(() => {
+    if (type) {
+      openModal();
+    } else {
+      isModalOpen = false;
+      if (intervalRef) clearInterval(intervalRef);
+    }
+  });
 </script>
 
 <Modal isOpen={isModalOpen}>
@@ -55,7 +64,7 @@
     <p class="confirmation__actions">
       <button
         class="confirmation__action"
-        on:click={handleDone}
+        onclick={handleDone}
         >OK
       </button>
     </p>

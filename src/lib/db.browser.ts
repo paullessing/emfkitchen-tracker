@@ -1,8 +1,8 @@
-import type { EaterDay } from '$lib/db.class';
 import * as EaterUtils from '$lib/dataStorage.util';
 import { addLogsToDays } from '$lib/dataStorage.util';
-import type { EatLog } from '$lib/log.types';
+import type { EaterDay } from '$lib/db.class';
 import type { EaterTotals } from '$lib/EaterTotals.type';
+import type { EatLog } from '$lib/log.types';
 
 const LOCAL_STORAGE_DATA_KEY = 'eaterData';
 const LOCAL_STORAGE_TOTALS_KEY = 'lastServerTotals';
@@ -36,6 +36,7 @@ export class BrowserStorage {
       }
     } catch (e) {
       console.log('Failed to parse local data');
+      console.log(e);
     }
     return {
       timestamp: 0,

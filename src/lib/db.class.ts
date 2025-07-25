@@ -1,6 +1,6 @@
-import type { EatLog } from '$lib/log.types';
 import { computeTotals, getDateString, getMealTime } from '$lib/dataStorage.util';
 import type { EaterTotals } from '$lib/EaterTotals.type';
+import type { EatLog } from '$lib/log.types';
 
 export interface DatabasePersistor {
   getData(): Promise<EaterDay[]>;

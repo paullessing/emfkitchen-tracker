@@ -1,16 +1,16 @@
-import type { EatLog, StoreEaterRequestBody } from '$lib/log.types';
-import type { EaterType } from '$lib/EaterType.type';
 import { type Writable, writable } from 'svelte/store';
-import type { EaterTotals } from '$lib/EaterTotals.type';
-import db, { BrowserStorage } from '$lib/db.browser';
 import { browser } from '$app/environment';
+import db, { BrowserStorage } from '$lib/db.browser';
+import type { EaterTotals } from '$lib/EaterTotals.type';
+import type { EaterType } from '$lib/EaterType.type';
 import { FakeBrowserStorage } from '$lib/FakeBrowserStorage';
+import type { EatLog, StoreEaterRequestBody } from '$lib/log.types';
 
 const RETRY_SYNC_INTERVAL_SECONDS = 10;
 
 export class EaterService {
   private readonly _eaterTotals: Writable<EaterTotals>;
-  public get eaterTotals() {
+  public get eaterTotals(): Writable<EaterTotals> {
     return this._eaterTotals;
   }
 
@@ -59,7 +59,7 @@ export class EaterService {
 
     try {
       await this.attemptSync();
-    } catch (e) {
+    } catch {
       this.startSyncAttempts();
     }
   }
@@ -104,7 +104,7 @@ export class EaterService {
     }
   }
 
-  private clearInterval() {
+  private clearInterval(): void {
     if (this.syncInterval) {
       clearInterval(this.syncInterval);
       this.syncInterval = null;
