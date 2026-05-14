@@ -13,3 +13,6 @@ db.json
 /db/
 
 *:Zone.Identifier
+
+# Exported data from previous events, for analysis
+/export-data
