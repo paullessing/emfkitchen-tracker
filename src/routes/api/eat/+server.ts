@@ -38,8 +38,7 @@ export async function POST(event: { request: Request }): Promise<Response> {
     return json({
       success: true,
       totals: await db.getTotals(new Date()),
-    })
-
+    });
   } catch (e) {
     if (e instanceof RequestValidationError) {
       return e.userResponse;
