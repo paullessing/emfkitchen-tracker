@@ -113,7 +113,7 @@ export function convertDaysToLogs(data: EaterDay[]): EatLog[] {
           .concat(
             getAllTimestamps(day.volunteers).map((timestamp) => ({
               timestamp,
-              type: 'orga',
+              type: 'volunteer',
             })),
           ),
       [],
