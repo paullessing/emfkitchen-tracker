@@ -10,6 +10,9 @@ vite.config.ts.timestamp-*
 .idea/
 
 db.json
-./db/
+/db/
 
 *:Zone.Identifier
+
+# Exported data from previous events, for analysis
+/export-data

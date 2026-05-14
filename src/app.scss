@@ -1,4 +1,4 @@
-@import "reset";
+@import 'reset';
 
 html {
   font-size: 10px;
@@ -6,7 +6,7 @@ html {
 
 body {
   background-color: #213018;
-  background-image: url("./background-tiled.png");
+  background-image: url('./background-tiled.png');
   background-repeat: repeat;
   background-size: 300px;
 
@@ -22,6 +22,11 @@ button {
   font-family: inherit;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
 }
