@@ -14,6 +14,9 @@
 		"docker:build": "docker build . -t kitchentracker",
 		"docker:run": "docker run --rm --name kitchentracker -p 3000:3000 -v $(pwd)/db/:/db/ -it kitchentracker"
 	},
+	"dependencies": {
+		"@seald-io/nedb": "^4.0.0"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^5.0.1",
