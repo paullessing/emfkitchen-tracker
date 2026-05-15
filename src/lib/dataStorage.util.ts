@@ -1,8 +1,12 @@
 import type { DayMeals, EaterDay } from '$lib/db.class';
 import type { EatLog } from '$lib/log.types';
 import type { EaterTotals } from '$lib/EaterTotals.type';
+import { EaterType } from '$lib/EaterType.type';
 
-export const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
+export const EaterTypeMap = {
+  [EaterType.VOLUNTEER]: 'volunteers',
+  [EaterType.ORGA]: 'orga',
+} as const satisfies Record<EaterType, keyof EaterDay>;
 
 export function computeTotals(
   now: Date,
@@ -107,13 +111,13 @@ export function convertDaysToLogs(data: EaterDay[]): EatLog[] {
           .concat(
             getAllTimestamps(day.orga).map((timestamp) => ({
               timestamp,
-              type: 'orga',
+              type: EaterType.ORGA,
             })),
           )
           .concat(
             getAllTimestamps(day.volunteers).map((timestamp) => ({
               timestamp,
-              type: 'volunteer',
+              type: EaterType.VOLUNTEER,
             })),
           ),
       [],

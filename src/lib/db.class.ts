@@ -7,6 +7,7 @@ import {
   getDateString,
 } from '$lib/dataStorage.util';
 import type { EaterTotals } from '$lib/EaterTotals.type';
+import type { EaterType } from '$lib/EaterType.type';
 
 export interface DatabasePersistor {
   getData(): Promise<EaterDay[]>;
@@ -31,7 +32,7 @@ export interface DayMeals {
 export class Database {
   constructor(private readonly persistor: DatabasePersistor) {}
 
-  public async addEntry(time: Date, type: EatLog['type']): Promise<void> {
+  public async addEntry(time: Date, type: EaterType): Promise<void> {
     const data: EaterDay[] = await this.persistor.getData();
     const dateString = getDateString(time);
 
