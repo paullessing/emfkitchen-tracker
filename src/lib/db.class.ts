@@ -1,17 +1,21 @@
 import type { EatLog } from '$lib/log.types';
 import {
-  addLogToDay,
   computeTotals,
   convertDaysToLogs,
-  createNewDay,
   getDateString,
+  getMealTime,
 } from '$lib/dataStorage.util';
 import type { EaterTotals } from '$lib/EaterTotals.type';
 import type { EaterType } from '$lib/EaterType.type';
 
 export interface DatabasePersistor {
   getData(): Promise<EaterDay[]>;
-  save(data: EaterDay): Promise<void>;
+  addMealEntry(
+    date: string,
+    type: EaterType,
+    meal: keyof DayMeals,
+    timestamp: number,
+  ): Promise<void>;
 }
 
 type Timestamp = number;
@@ -33,17 +37,7 @@ export class Database {
   constructor(private readonly persistor: DatabasePersistor) {}
 
   public async addEntry(time: Date, type: EaterType): Promise<void> {
-    const data: EaterDay[] = await this.persistor.getData();
-    const dateString = getDateString(time);
-
-    let day = data.find(({ date }) => date === dateString);
-    if (!day) {
-      day = createNewDay(dateString);
-    }
-
-    addLogToDay(day, time, type);
-
-    await this.persistor.save(day);
+    await this.persistor.addMealEntry(getDateString(time), type, getMealTime(time), time.getTime());
   }
 
   public async getTotals(now: Date = new Date()): Promise<EaterTotals> {
