@@ -144,13 +144,18 @@ export function addLogToDays({ timestamp, type }: EatLog, data: EaterDay[] = [])
     data.sort((a, b) => (a.date < b.date ? -1 : 1));
   }
 
-  const eatersInMeal = day[EaterTypeMap[type]][getMealTime(datetime)];
+  addLogToDay(day, datetime, type);
+
+  return data;
+}
+
+export function addLogToDay(day: EaterDay, time: Date, type: EatLog['type']): void {
+  const timestamp = time.getTime();
+  const eatersInMeal = day[EaterTypeMap[type]][getMealTime(time)];
   if (!eatersInMeal.includes(timestamp)) {
     eatersInMeal.push(timestamp);
     eatersInMeal.sort();
   }
-
-  return data;
 }
 
 export function getMealTime(timestamp: Date): keyof DayMeals {

@@ -17,10 +17,8 @@ export async function createDb(): Promise<Database> {
       return store.findAsync({});
     },
 
-    async save(data: EaterDay[]): Promise<void> {
-      for (const day of data) {
-        await store.updateAsync({ date: day.date }, day, { upsert: true });
-      }
+    async save(day: EaterDay): Promise<void> {
+      await store.updateAsync({ date: day.date }, day, { upsert: true });
     },
   };
 
