@@ -162,10 +162,22 @@ export function addLogToDay(day: EaterDay, time: Date, type: EatLog['type']): vo
   }
 }
 
-export function getMealTime(timestamp: Date): keyof DayMeals {
-  const hour = timestamp.getHours();
+const LONDON_TZ = 'Europe/London';
+const LONDON_HOURS = new Intl.DateTimeFormat('en-GB', {
+  timeZone: LONDON_TZ,
+  hour: 'numeric',
+  hourCycle: 'h23',
+});
 
-  if (hour >= 6 && hour < 12) {
+function londonHour(timestamp: Date): number {
+  return parseInt(LONDON_HOURS.format(timestamp), 10);
+}
+
+export function getMealTime(timestamp: Date): keyof DayMeals {
+  const hour = londonHour(timestamp);
+  const minutes = timestamp.getMinutes();
+
+  if (hour >= 6 && (hour < 11 || (hour === 11 && minutes <= 45))) {
     return 'breakfast';
   } else if (hour >= 11 && hour < 17) {
     return 'lunch';
