@@ -168,6 +168,12 @@ const LONDON_HOURS = new Intl.DateTimeFormat('en-GB', {
   hour: 'numeric',
   hourCycle: 'h23',
 });
+const LONDON_DATE = new Intl.DateTimeFormat('en-GB', {
+  timeZone: LONDON_TZ,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
 
 function londonHour(timestamp: Date): number {
   return parseInt(LONDON_HOURS.format(timestamp), 10);
@@ -189,7 +195,10 @@ export function getMealTime(timestamp: Date): keyof DayMeals {
 }
 
 export function getDateString(timestamp: Date): string {
-  return timestamp.toISOString().replace(/T.*$/, '');
+  const p = Object.fromEntries(
+    LONDON_DATE.formatToParts(timestamp).map(({ type, value }) => [type, value]),
+  );
+  return `${p.year}-${p.month}-${p.day}`;
 }
 
 export function createNewDay(date: string): EaterDay {
