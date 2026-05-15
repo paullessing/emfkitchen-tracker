@@ -2,7 +2,7 @@ import type { DayMeals, EaterDay } from '$lib/db.class';
 import type { EatLog } from '$lib/log.types';
 import type { EaterTotals } from '$lib/EaterTotals.type';
 
-const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
+export const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
 
 export function computeTotals(
   now: Date,
@@ -171,7 +171,7 @@ export function getDateString(timestamp: Date): string {
   return timestamp.toISOString().replace(/T.*$/, '');
 }
 
-function createNewDay(date: string): EaterDay {
+export function createNewDay(date: string): EaterDay {
   return {
     date,
     orga: {
