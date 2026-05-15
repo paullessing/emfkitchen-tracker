@@ -68,7 +68,10 @@ export class EaterService {
     this.clearInterval();
     if (browser && this.db.hasUnsyncedLogs()) {
       console.log('Starting sync attempts', this.db.getUnsyncedLogs());
-      setInterval(() => this.attemptSync(), RETRY_SYNC_INTERVAL_SECONDS * 1000);
+      this.syncInterval = setInterval(
+        () => this.attemptSync(),
+        RETRY_SYNC_INTERVAL_SECONDS * 1000,
+      ) as unknown as number;
     }
   }
 
