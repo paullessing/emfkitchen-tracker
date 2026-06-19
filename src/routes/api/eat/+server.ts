@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { EatLog, StoreEaterRequestBody } from '$lib/log.types';
+import { EaterType } from '$lib/EaterType.type';
 import db from '$lib/server/db.server';
 
 class RequestValidationError extends Error {
@@ -65,9 +66,10 @@ async function validatePostBody(request: Request): Promise<EatLog[]> {
     );
   }
 
+  const validTypes = Object.values(EaterType) as string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function isValidLogEntry(log: any): log is EatLog {
-    return typeof log.timestamp === 'number' && ['orga', 'volunteer'].includes(log.type);
+    return typeof log.timestamp === 'number' && validTypes.includes(log.type);
   }
 
   if (!('logs' in data) || !Array.isArray(data.logs) || !data.logs.every(isValidLogEntry)) {

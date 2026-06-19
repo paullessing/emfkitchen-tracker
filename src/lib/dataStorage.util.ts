@@ -1,8 +1,12 @@
 import type { DayMeals, EaterDay } from '$lib/db.class';
 import type { EatLog } from '$lib/log.types';
 import type { EaterTotals } from '$lib/EaterTotals.type';
+import { EaterType } from '$lib/EaterType.type';
 
-const EaterTypeMap = { volunteer: 'volunteers', orga: 'orga' } as const;
+export const EaterTypeMap = {
+  [EaterType.VOLUNTEER]: 'volunteers',
+  [EaterType.ORGA]: 'orga',
+} as const satisfies Record<EaterType, keyof EaterDay>;
 
 export function computeTotals(
   now: Date,
@@ -107,13 +111,13 @@ export function convertDaysToLogs(data: EaterDay[]): EatLog[] {
           .concat(
             getAllTimestamps(day.orga).map((timestamp) => ({
               timestamp,
-              type: 'orga',
+              type: EaterType.ORGA,
             })),
           )
           .concat(
             getAllTimestamps(day.volunteers).map((timestamp) => ({
               timestamp,
-              type: 'volunteer',
+              type: EaterType.VOLUNTEER,
             })),
           ),
       [],
@@ -144,19 +148,42 @@ export function addLogToDays({ timestamp, type }: EatLog, data: EaterDay[] = [])
     data.sort((a, b) => (a.date < b.date ? -1 : 1));
   }
 
-  const eatersInMeal = day[EaterTypeMap[type]][getMealTime(datetime)];
-  if (!eatersInMeal.includes(timestamp)) {
-    eatersInMeal.push(timestamp);
-    eatersInMeal.sort();
-  }
+  addLogToDay(day, datetime, type);
 
   return data;
 }
 
-export function getMealTime(timestamp: Date): keyof DayMeals {
-  const hour = timestamp.getHours();
+export function addLogToDay(day: EaterDay, time: Date, type: EatLog['type']): void {
+  const timestamp = time.getTime();
+  const eatersInMeal = day[EaterTypeMap[type]][getMealTime(time)];
+  if (!eatersInMeal.includes(timestamp)) {
+    eatersInMeal.push(timestamp);
+    eatersInMeal.sort();
+  }
+}
 
-  if (hour >= 6 && hour < 12) {
+const LONDON_TZ = 'Europe/London';
+const LONDON_HOURS = new Intl.DateTimeFormat('en-GB', {
+  timeZone: LONDON_TZ,
+  hour: 'numeric',
+  hourCycle: 'h23',
+});
+const LONDON_DATE = new Intl.DateTimeFormat('en-GB', {
+  timeZone: LONDON_TZ,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
+function londonHour(timestamp: Date): number {
+  return parseInt(LONDON_HOURS.format(timestamp), 10);
+}
+
+export function getMealTime(timestamp: Date): keyof DayMeals {
+  const hour = londonHour(timestamp);
+  const minutes = timestamp.getMinutes();
+
+  if (hour >= 6 && (hour < 11 || (hour === 11 && minutes <= 45))) {
     return 'breakfast';
   } else if (hour >= 11 && hour < 17) {
     return 'lunch';
@@ -168,10 +195,13 @@ export function getMealTime(timestamp: Date): keyof DayMeals {
 }
 
 export function getDateString(timestamp: Date): string {
-  return timestamp.toISOString().replace(/T.*$/, '');
+  const p = Object.fromEntries(
+    LONDON_DATE.formatToParts(timestamp).map(({ type, value }) => [type, value]),
+  );
+  return `${p.year}-${p.month}-${p.day}`;
 }
 
-function createNewDay(date: string): EaterDay {
+export function createNewDay(date: string): EaterDay {
   return {
     date,
     orga: {

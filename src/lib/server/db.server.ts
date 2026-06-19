@@ -1,5 +1,7 @@
-import type { DatabasePersistor, EaterDay } from '$lib/db.class';
+import type { DatabasePersistor, DayMeals, EaterDay } from '$lib/db.class';
 import { Database } from '$lib/db.class';
+import { createNewDay, EaterTypeMap } from '$lib/dataStorage.util';
+import type { EaterType } from '$lib/EaterType.type';
 import Datastore from '@seald-io/nedb';
 import { join } from 'path';
 import { env } from '$env/dynamic/private';
@@ -12,15 +14,28 @@ export async function createDb(): Promise<Database> {
     autoload: true,
   });
 
+  await store.ensureIndexAsync({ fieldName: 'date', unique: true });
+
   const persistor: DatabasePersistor = {
     async getData(): Promise<EaterDay[]> {
       return store.findAsync({});
     },
 
-    async save(data: EaterDay[]): Promise<void> {
-      for (const day of data) {
-        await store.updateAsync({ date: day.date }, day, { upsert: true });
+    async addMealEntry(
+      date: string,
+      type: EaterType,
+      meal: keyof DayMeals,
+      timestamp: number,
+    ): Promise<void> {
+      try {
+        await store.insertAsync(createNewDay(date));
+      } catch (e: unknown) {
+        if ((e as { errorType?: string }).errorType !== 'uniqueViolated') throw e;
       }
+      await store.updateAsync(
+        { date },
+        { $addToSet: { [`${EaterTypeMap[type]}.${meal}`]: timestamp } },
+      );
     },
   };
 

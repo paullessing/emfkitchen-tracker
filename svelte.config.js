@@ -12,10 +12,6 @@ const config = {
     // If your environment is not supported or you settled on a specific environment, switch out the adapter.
     // See https://kit.svelte.dev/docs/adapters for more information about adapters.
     adapter: adapter(),
-    // Disable origin checking, we don't need it
-    csrf: {
-      checkOrigin: false,
-    },
   },
 };
 

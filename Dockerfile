@@ -11,7 +11,9 @@ RUN npm run build
 FROM node:20-alpine AS deploy
 WORKDIR /usr/src/app
 
-COPY package.json .env ./
+COPY package*.json .env ./
+RUN npm ci --omit=dev
+
 COPY --from=build /usr/src/app/build/ ./
 
 CMD ["node", "index.js"]
