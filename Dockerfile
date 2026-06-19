@@ -12,7 +12,7 @@ FROM node:20-alpine AS deploy
 WORKDIR /usr/src/app
 
 COPY package*.json .env ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts # Install nedb, but skip the svelte postinstall hooks
 
 COPY --from=build /usr/src/app/build/ ./
 

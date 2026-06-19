@@ -1,6 +1,6 @@
 {
   "name": "emfkitchen-tracker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "serve": "vite dev",
@@ -12,7 +12,7 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "docker:build": "docker build . -t kitchentracker",
-    "docker:run": "docker run --rm --name kitchentracker -p 3000:3000 -v $(pwd)/db/:/db/ -it kitchentracker"
+    "docker:run": "docker run --rm --name kitchentracker -p 3000:3000 -v $(pwd)/db/:/db/ --env-file=.env.local -it kitchentracker"
   },
   "dependencies": {
     "@seald-io/nedb": "^4.0.0"
