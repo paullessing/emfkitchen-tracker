@@ -20,30 +20,70 @@
 
     await eaterService.logEater(type);
   };
+
+  let fullscreenTimeoutTimer: Timeout | null = null;
+  const clearTimer = () => {
+    if (fullscreenTimeoutTimer) {
+      clearTimeout(fullscreenTimeoutTimer);
+      fullscreenTimeoutTimer = null;
+    }
+  };
+  let fullscreenTapCount = 0;
+  const toggleFullscreen = () => {
+    fullscreenTapCount++;
+    console.log('click', fullscreenTapCount);
+    clearTimer();
+
+    if (fullscreenTapCount >= 5) {
+      fullscreenTapCount = 0;
+
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        document.getElementById('content')?.requestFullscreen();
+      }
+    } else {
+      fullscreenTimeoutTimer = setTimeout(() => {
+        console.log('reset');
+        fullscreenTapCount = 0;
+        clearTimer();
+      }, 500);
+    }
+  };
 </script>
 
-<img
-  class="logo"
-  src="/logo-outline.svg"
-  alt="EMF Volunteer Kitchen"
-/>
+<div id="content">
+  <!-- svelte-ignore a11y-invalid-attribute -->
+  <a
+    on:click={toggleFullscreen}
+    role="button"
+    tabindex="0"
+    href="javascript:void(0);"
+  >
+    <img
+      class="logo"
+      src="/logo-outline.svg"
+      alt="EMF Volunteer Kitchen"
+    />
+  </a>
 
-<h1 class="title">Volunteer Kitchen Meal Log</h1>
+  <h1 class="title">Volunteer Kitchen Meal Log</h1>
 
-<p class="cta-header">
-  Please log your token type<br />before taking a plate:
-</p>
+  <p class="cta-header">
+    Please log your token type<br />before taking a plate:
+  </p>
 
-<EaterSelection on:chooseType={onChooseEaterType} />
+  <EaterSelection on:chooseType={onChooseEaterType} />
 
-<h2 class="people-served">People Served</h2>
+  <h2 class="people-served">People Served</h2>
 
-<EaterStats totals={$totals} />
+  <EaterStats totals={$totals} />
 
-<CounterConfirmationModal
-  type={chosenEaterType}
-  on:done={() => (chosenEaterType = null)}
-></CounterConfirmationModal>
+  <CounterConfirmationModal
+    type={chosenEaterType}
+    on:done={() => (chosenEaterType = null)}
+  ></CounterConfirmationModal>
+</div>
 
 <style lang="scss">
   @import '../variables';
