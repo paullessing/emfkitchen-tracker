@@ -36,6 +36,7 @@
 
     &__number {
       font-size: 5rem;
+      line-height: 1.2;
       margin: 0;
     }
   }

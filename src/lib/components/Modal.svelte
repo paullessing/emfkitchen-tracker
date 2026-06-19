@@ -31,7 +31,7 @@
       top: 50%;
       transform: translate(-50%, -50%);
 
-      background: $dark-green;
+      background: $colour-modal;
       box-shadow: 0 0 2rem 1rem rgba(white, 0.4);
       padding: 8rem;
       text-align: center;

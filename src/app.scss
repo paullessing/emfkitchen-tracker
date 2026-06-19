@@ -1,14 +1,12 @@
 @import 'reset';
+@import '_variables.scss';
 
 html {
   font-size: 10px;
 }
 
 body {
-  background-color: #213018;
-  background-image: url('./background-tiled.png');
-  background-repeat: repeat;
-  background-size: 300px;
+  background-color: $dark-blue;
 
   color: white;
   font-family: Raleway, Arial, Helvetica, sans-serif;

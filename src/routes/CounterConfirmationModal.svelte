@@ -92,7 +92,7 @@
       box-shadow: 0 0 16px 4px rgba(black, 0.3);
 
       border-radius: 0.5rem;
-      background-color: $pale-green;
+      background-color: $colour-action;
       padding: 2rem 4rem;
       font-size: 2rem;
     }

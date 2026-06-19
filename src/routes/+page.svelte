@@ -26,7 +26,6 @@
   class="logo"
   src="/logo-outline.svg"
   alt="EMF Volunteer Kitchen"
-  width="150"
 />
 
 <h1 class="title">Volunteer Kitchen Meal Log</h1>
@@ -51,8 +50,9 @@
 
   .logo {
     position: absolute;
-    left: -1rem;
-    top: 1rem;
+    left: 3rem;
+    top: 2rem;
+    height: 15rem;
   }
 
   .title {
@@ -68,8 +68,8 @@
 
   .cta-header {
     text-align: center;
-    font-size: 3rem;
-    margin-top: 3rem;
+    font-size: 2.7rem;
+    margin-top: 2rem;
     margin-bottom: 2rem;
   }
 </style>

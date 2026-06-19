@@ -34,7 +34,7 @@
 
     &__choice {
       flex: 100% 1 1;
-      height: 30vh;
+      height: 26vh;
       font-size: 4rem;
       line-height: 1.2;
       word-wrap: break-word;
@@ -61,12 +61,16 @@
 
       &--volunteer {
         //background: $colour-volunteer;
-        background: linear-gradient(135deg, #afc944 0%, #528329 100%);
+        background: linear-gradient(
+          135deg,
+          nth($colour-volunteer, 1) 0%,
+          nth($colour-volunteer, 2) 100%
+        );
       }
 
       &--orga {
         //background: $colour-orga;
-        background: linear-gradient(135deg, $orange 0%, $pink 100%);
+        background: linear-gradient(135deg, nth($colour-orga, 1) 0%, nth($colour-orga, 2) 100%);
       }
     }
 

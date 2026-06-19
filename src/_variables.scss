@@ -3,8 +3,14 @@ $mid-green: #528329;
 $dark-green: #213018;
 $yellow: #f9e200;
 $orange: #f77f02;
-$pink: #f55089;
-$blue: #2eadd9;
+$coral: #f5515e;
+$green: #2AE28C;
+$light-blue: #2eadd9;
+$mid-blue: #005D96;
+$dark-blue: #000730;
 
-$colour-volunteer: $pale-green;
-$colour-orga: $orange;
+$colour-action: $orange;
+$colour-modal: $dark-blue;
+
+$colour-volunteer: ($light-blue $mid-blue);
+$colour-orga: ($orange $coral);
