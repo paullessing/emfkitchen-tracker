@@ -1,9 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(node run check)",
-      "Bash(node run format)"
-    ]
+    "allow": ["Bash(node run check)", "Bash(node run format)"]
   },
   "hooks": {
     "PostToolUse": [
