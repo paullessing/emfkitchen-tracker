@@ -3,9 +3,12 @@ import type { EatLog } from '$lib/log.types';
 import type { EaterTotals } from '$lib/EaterTotals.type';
 import { EaterType } from '$lib/EaterType.type';
 
+const emptyMeals: DayMeals = { breakfast: [], lunch: [], dinner: [], night: [] };
+
 export const EaterTypeMap = {
   [EaterType.VOLUNTEER]: 'volunteers',
   [EaterType.ORGA]: 'orga',
+  [EaterType.OTHER]: 'other',
 } as const satisfies Record<EaterType, keyof EaterDay>;
 
 export function computeTotals(
@@ -39,15 +42,20 @@ export function computeTotals(
     (acc, day) => {
       const orgaMeals = reduceMeals(day.orga);
       const volunteerMeals = reduceMeals(day.volunteers);
+      const otherMeals = reduceMeals(day.other ?? emptyMeals);
 
       const totals: { [Key in keyof DayMeals]: number } = {
-        breakfast: orgaMeals.breakfast + volunteerMeals.breakfast,
-        lunch: orgaMeals.lunch + volunteerMeals.lunch,
-        dinner: orgaMeals.dinner + volunteerMeals.dinner,
-        night: orgaMeals.night + volunteerMeals.night,
+        breakfast: orgaMeals.breakfast + volunteerMeals.breakfast + otherMeals.breakfast,
+        lunch: orgaMeals.lunch + volunteerMeals.lunch + otherMeals.lunch,
+        dinner: orgaMeals.dinner + volunteerMeals.dinner + otherMeals.dinner,
+        night: orgaMeals.night + volunteerMeals.night + otherMeals.night,
       };
 
-      const latestDate = Math.max(orgaMeals.latestDate, volunteerMeals.latestDate);
+      const latestDate = Math.max(
+        orgaMeals.latestDate,
+        volunteerMeals.latestDate,
+        otherMeals.latestDate,
+      );
 
       const today = totals.breakfast + totals.lunch + totals.dinner + totals.night;
 
@@ -118,6 +126,12 @@ export function convertDaysToLogs(data: EaterDay[]): EatLog[] {
             getAllTimestamps(day.volunteers).map((timestamp) => ({
               timestamp,
               type: EaterType.VOLUNTEER,
+            })),
+          )
+          .concat(
+            getAllTimestamps(day.other ?? emptyMeals).map((timestamp) => ({
+              timestamp,
+              type: EaterType.OTHER,
             })),
           ),
       [],
@@ -211,6 +225,12 @@ export function createNewDay(date: string): EaterDay {
       night: [],
     },
     volunteers: {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      night: [],
+    },
+    other: {
       breakfast: [],
       lunch: [],
       dinner: [],

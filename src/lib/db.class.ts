@@ -24,6 +24,7 @@ export interface EaterDay {
   date: string;
   orga: DayMeals;
   volunteers: DayMeals;
+  other: DayMeals;
 }
 
 export interface DayMeals {

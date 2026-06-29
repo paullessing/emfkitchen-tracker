@@ -77,7 +77,7 @@ async function validatePostBody(request: Request): Promise<EatLog[]> {
       json(
         {
           success: false,
-          error: `Malformed request, expected: { logs: { timestamp: number, type: 'orga' | 'volunteer' }[] }`,
+          error: `Malformed request, expected: { logs: { timestamp: number, type: 'orga' | 'volunteer' | 'other' }[] }`,
         },
         {
           status: 400,

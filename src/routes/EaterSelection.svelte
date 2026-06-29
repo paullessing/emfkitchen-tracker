@@ -20,6 +20,12 @@
     >Wristband<br />
     <span class="eater-selection__subtitle">Permanent Volunteers</span>
   </button>
+  <button
+    class="eater-selection__choice eater-selection__choice--other"
+    on:click={handleClick(EaterType.OTHER)}
+    >Other<br />
+    <span class="eater-selection__subtitle">No Token</span>
+  </button>
 </div>
 
 <style lang="scss">
@@ -71,6 +77,10 @@
       &--orga {
         //background: $colour-orga;
         background: linear-gradient(135deg, nth($colour-orga, 1) 0%, nth($colour-orga, 2) 100%);
+      }
+
+      &--other {
+        background: linear-gradient(135deg, nth($colour-other, 1) 0%, nth($colour-other, 2) 100%);
       }
     }
 

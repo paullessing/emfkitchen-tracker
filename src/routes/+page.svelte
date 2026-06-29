@@ -14,9 +14,13 @@
     eaterService.getTotals();
   }
 
-  let showTokenReminder = false;
+  let showMessage: 'volunteer' | 'other' | null = null;
+
   let tokenReminderKey = 0;
   let tokenReminderTimer: ReturnType<typeof setTimeout> | null = null;
+
+  let otherReminderKey = 0;
+  let otherReminderTimer: ReturnType<typeof setTimeout> | null = null;
 
   const TOAST_DURATION_MS = 4000;
 
@@ -25,11 +29,19 @@
 
     if (type === EaterType.VOLUNTEER) {
       if (tokenReminderTimer) clearTimeout(tokenReminderTimer);
-      showTokenReminder = true;
+      showMessage = 'volunteer';
       tokenReminderKey++;
       tokenReminderTimer = setTimeout(() => {
-        showTokenReminder = false;
+        showMessage = null;
         tokenReminderTimer = null;
+      }, TOAST_DURATION_MS);
+    } else if (type === EaterType.OTHER) {
+      if (otherReminderTimer) clearTimeout(otherReminderTimer);
+      showMessage = 'other';
+      otherReminderKey++;
+      otherReminderTimer = setTimeout(() => {
+        showMessage = null;
+        otherReminderTimer = null;
       }, TOAST_DURATION_MS);
     }
   };
@@ -93,7 +105,7 @@
   <EaterStats totals={$totals} />
 </div>
 
-{#if showTokenReminder}
+{#if showMessage === 'volunteer'}
   <div
     class="token-reminder"
     in:fly={{ y: -120, duration: 400, easing: backOut }}
@@ -101,6 +113,19 @@
   >
     Please put your <strong>TOKEN</strong> into the <strong>BOX</strong>.
     {#key tokenReminderKey}
+      <div class="token-reminder__bar"></div>
+    {/key}
+  </div>
+{/if}
+
+{#if showMessage === 'other'}
+  <div
+    class="token-reminder token-reminder--other"
+    in:fly={{ y: -120, duration: 400, easing: backOut }}
+    out:fly={{ y: -120, duration: 400, easing: backIn }}
+  >
+    Please speak to a kitchen member about your meal.
+    {#key otherReminderKey}
       <div class="token-reminder__bar"></div>
     {/key}
   </div>
@@ -153,6 +178,10 @@
     box-shadow: 0 0 2rem rgba(0, 0, 0, 0.5);
     white-space: nowrap;
     overflow: hidden;
+
+    &--other {
+      background: $coral;
+    }
 
     &__bar {
       position: absolute;
